@@ -1,0 +1,24 @@
+{
+  "name": "minipack",
+  "private": true,
+  "scripts": {
+    "build:client": "ROOT_PATH=$PWD yarn workspace client build",
+    "build:server": "ROOT_PATH=$PWD yarn workspace server build",
+    "start": "ROOT_PATH=$PWD node --conditions react-server ./dist/server/app.js"
+  },
+  "dependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@babel/preset-typescript": "^7.26.0",
+    "@babel/preset-react": "^7.23.3",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "typescript": "^5.7.3"
+  },
+  "workspaces": [
+    "packages/**/*"
+  ],
+  "packageManager": "yarn@1.22.22"
+}

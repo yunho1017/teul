@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "target": "es6",
+    "module": "CommonJS",
+    "moduleResolution": "node",
+    "rootDir": "framework",
+    "outDir": "../../dist/client",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "jsx": "react-jsx"
+  },
+  "include": ["framework/**/*"]
+}
