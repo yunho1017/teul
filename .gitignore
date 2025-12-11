@@ -73,3 +73,6 @@ dist
 .vscode
 
 .DS_Store
+
+waku*
+02_template
