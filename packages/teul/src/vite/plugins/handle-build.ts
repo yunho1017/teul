@@ -19,7 +19,7 @@ import path from "node:path";
 import { pathToFileURL } from "node:url";
 import type { Plugin } from "vite";
 import type { TeulConfig } from "../../config.js";
-import { emitStaticFile, waitForTasks } from "../../utils/builder/build.js";
+import { emitStaticFile, waitForTasks } from "../utils/build.js";
 
 export function handleBuildPlugin(
   config: Required<Omit<TeulConfig, "vite">> & Pick<TeulConfig, "vite">,
@@ -35,8 +35,9 @@ export function handleBuildPlugin(
           "index.js",
         );
         console.log("[teul] Starting processBuild...");
-        const entry: typeof import("../entries/entry.server.js") =
-          await import(pathToFileURL(entryPath).href);
+        const entry: typeof import("../entries/entry.server.js") = await import(
+          pathToFileURL(entryPath).href
+        );
         await entry.processBuild(viteConfig, config, emitStaticFile);
         await waitForTasks();
 

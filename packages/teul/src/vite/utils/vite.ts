@@ -1,3 +1,6 @@
+/**
+ * 다른 환경(SSR, SERVER, BROwSER) 의 모듈을 불러오는 유틸
+ */
 export function loadSsrEntryModule() {
   // This is an API to communicate between two server environments `rsc` and `ssr`.
   // https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-rsc/README.md#importmetaviterscloadmodule

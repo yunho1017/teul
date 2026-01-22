@@ -57,10 +57,9 @@ export function combinedPlugins(
       distDir: "dist",
       pagesDir: "pages",
       port: 3000,
-      rsc: {
-        base: "/RSC",
-        extension: ".rsc",
-      },
+      rscBase: "/RSC",
+      rscExtension: ".rsc",
+
       vite: undefined,
       ...rscPluginOptions?.config,
     };

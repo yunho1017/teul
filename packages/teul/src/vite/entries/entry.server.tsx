@@ -1,20 +1,15 @@
 /// <reference types="vite/client" />
 // Server Entry (Teul - Hono 래퍼)
 import { serveStatic } from "@hono/node-server/serve-static";
-import {
-  decodeAction,
-  decodeFormState,
-  decodeReply,
-  renderToReadableStream,
-} from "@vitejs/plugin-rsc/rsc";
+import { decodeReply, renderToReadableStream } from "@vitejs/plugin-rsc/rsc";
 import { Hono } from "hono";
 import { config } from "virtual:vite-rsc-teul/config";
 import serverEntry from "virtual:vite-rsc-teul/server-entry";
+import type { HandleRequest } from "../../types.js";
 import { createRenderUtils } from "../utils/render.js";
 import { getInput } from "../utils/request.js";
-import { loadSsrEntryModule } from "../utils/vite.js";
-import type { HandleRequest } from "../../types.js";
 import { stringToStream } from "../utils/stream.js";
+import { loadSsrEntryModule } from "../utils/vite.js";
 
 type HandleRequestOutput = Awaited<ReturnType<HandleRequest>>;
 
@@ -36,8 +31,6 @@ function createApp(app: Hono) {
       { req: ctx.req.raw },
       config,
       decodeReply,
-      decodeAction,
-      decodeFormState,
     );
 
     console.log("[entry.server] input.type:", input.type);

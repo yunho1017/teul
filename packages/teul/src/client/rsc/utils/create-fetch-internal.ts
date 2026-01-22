@@ -4,9 +4,11 @@ import { encodeRscPath } from "../../../utils/path.js";
 import type { FetchCache, FetchRscInternal, Elements } from "../types.js";
 import { unstableCallServerRsc } from "./call-server-rsc.js";
 
-const { createFromFetch, encodeReply, createTemporaryReferenceSet } = RSDWClient;
+const { createFromFetch, encodeReply, createTemporaryReferenceSet } =
+  RSDWClient;
 
-const BASE_RSC_PATH = `${import.meta.env?.VITE_CONFIG_BASE_PATH || ""}/RSC/`;
+const RSC_EXTENSION = import.meta.env?.TEUL_CONFIG_RSC_EXTENSION;
+const BASE_RSC_PATH = `${import.meta.env?.TEUL_CONFIG_RSC_BASE}/`;
 
 const checkStatus = async (
   responsePromise: Promise<Response>,
@@ -25,7 +27,7 @@ export const createFetchRscInternal =
   (fetchCache: FetchCache): FetchRscInternal =>
   (rscPath: string, rscParams: unknown, fetchFn = fetch) => {
     const temporaryReferences = createTemporaryReferenceSet();
-    const url = BASE_RSC_PATH + encodeRscPath(rscPath);
+    const url = BASE_RSC_PATH + encodeRscPath(rscPath, RSC_EXTENSION);
     const responsePromise =
       rscParams === undefined
         ? fetchFn(url)

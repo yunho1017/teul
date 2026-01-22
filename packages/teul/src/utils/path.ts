@@ -193,15 +193,15 @@ export const getPathMapping = (
  * RSC 경로를 파일 시스템에 안전한 형식으로 인코딩합니다.
  *
  * @param rscPath - 인코딩할 RSC 경로
- * @returns 인코딩된 경로 (.txt 확장자 포함)
+ * @returns 인코딩된 경로 (.rsc(사용자 정의 가능) 확장자 포함)
  *
  * @example
- * encodeRscPath("/home") // "_/home.txt"
- * encodeRscPath("/about/") // "_/about/_.txt"
- * encodeRscPath("") // "_.txt"
- * encodeRscPath("page") // "page.txt"
+ * encodeRscPath("/home", ".rsc") // "_/home.rsc"
+ * encodeRscPath("/about/", ".rsc") // "_/about/_.rsc"
+ * encodeRscPath("", ".rsc") // "_.rsc"
+ * encodeRscPath("page", ".rsc") // "page.rsc"
  */
-export const encodeRscPath = (rscPath: string) => {
+export const encodeRscPath = (rscPath: string, extension: string) => {
   if (rscPath.startsWith("_")) {
     throw new Error("rscPath must not start with `_`: " + rscPath);
   }
@@ -217,7 +217,7 @@ export const encodeRscPath = (rscPath: string) => {
   if (rscPath.endsWith("/")) {
     rscPath += "_";
   }
-  return rscPath + ".txt";
+  return rscPath + extension;
 };
 
 /**
@@ -225,21 +225,21 @@ export const encodeRscPath = (rscPath: string) => {
  *
  * @param rscPath - 디코딩할 인코딩된 경로
  * @returns 디코딩된 원본 경로
- * @throws {Error} .txt 확장자가 없는 경우 400 상태 코드와 함께 에러 발생
+ * @throws {Error} .rsc 확장자가 없는 경우 400 상태 코드와 함께 에러 발생
  *
  * @example
- * decodeRscPath("_/home.txt") // "/home"
- * decodeRscPath("_/about/_.txt") // "/about/"
- * decodeRscPath("_.txt") // ""
- * decodeRscPath("page.txt") // "page"
+ * decodeRscPath("_/home.rsc", ".rsc") // "/home"
+ * decodeRscPath("_/about/_.rsc", ".rsc") // "/about/"
+ * decodeRscPath("_.rsc", ".rsc") // ""
+ * decodeRscPath("page.rsc", ".rsc") // "page"
  */
-export const decodeRscPath = (rscPath: string) => {
-  if (!rscPath.endsWith(".txt")) {
+export const decodeRscPath = (rscPath: string, extension: string) => {
+  if (!rscPath.endsWith(extension)) {
     const err = new Error("Invalid encoded rscPath");
     (err as any).statusCode = 400;
     throw err;
   }
-  rscPath = rscPath.slice(0, -".txt".length);
+  rscPath = rscPath.slice(0, -extension.length);
   if (rscPath.startsWith("_")) {
     rscPath = rscPath.slice(1);
   }

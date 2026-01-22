@@ -36,8 +36,8 @@ export function virtualConfigPlugin(
     // RSC 관련 설정을 virtual 모듈로 노출
     createVirtualPlugin("vite-rsc-teul/rsc-config", async function () {
       return `
-        export const RSC_BASE = ${JSON.stringify(config.rsc?.base ?? "/RSC")};
-        export const RSC_EXTENSION = ${JSON.stringify(config.rsc?.extension ?? ".rsc")};
+        export const RSC_BASE = ${JSON.stringify(config.rscBase)};
+        export const RSC_EXTENSION = ${JSON.stringify(config.rscExtension)};
       `;
     }),
   ];

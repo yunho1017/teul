@@ -27,24 +27,17 @@ export type TeulConfig = {
   port?: number;
 
   /**
-   * RSC 경로 설정
-   * @default { base: "", extension: ".rsc" }
+   * RSC 베이스 경로 (prefix)
+   * 예: "" → "/.rsc", "/about.rsc"
+   * 예: "/RSC" → "/RSC/.rsc", "/RSC/about.rsc"
+   * @default ""
    */
-  rsc?: {
-    /**
-     * RSC 베이스 경로 (prefix)
-     * 예: "" → "/.rsc", "/about.rsc"
-     * 예: "/RSC" → "/RSC/.rsc", "/RSC/about.rsc"
-     * @default ""
-     */
-    base?: string;
-    /**
-     * RSC 파일 확장자
-     * @default ".rsc"
-     */
-    extension?: string;
-  };
-
+  rscBase?: string;
+  /**
+   * RSC 파일 확장자
+   * @default ".rsc"
+   */
+  rscExtension?: string;
   /**
    * Vite 설정 (고급)
    */
@@ -57,10 +50,8 @@ export const defaultConfig: Required<Omit<TeulConfig, "vite">> = {
   pagesDir: "pages",
   distDir: "dist",
   port: 3000,
-  rsc: {
-    base: "/RSC",
-    extension: ".rsc",
-  },
+  rscBase: "/RSC",
+  rscExtension: ".rsc",
 };
 
 // 설정 병합 헬퍼

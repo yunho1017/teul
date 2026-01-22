@@ -5,7 +5,7 @@ import { Readable } from "node:stream";
 import { pipeline } from "node:stream/promises";
 import { createWriteStream, existsSync } from "node:fs";
 import type { TeulConfig } from "../../config.js";
-import { DIST_PUBLIC } from "../../vite/constants.js";
+import { DIST_PUBLIC } from "../constants.js";
 
 const WRITE_FILE_BATCH_SIZE = 2500;
 

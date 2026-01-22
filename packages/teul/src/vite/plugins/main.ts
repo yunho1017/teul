@@ -35,9 +35,17 @@ export function mainPlugin(
   config: Required<Omit<TeulConfig, "vite">> & Pick<TeulConfig, "vite">,
 ): Plugin {
   return {
-    name: "rsc:teul",
+    name: "teul:vite-plugins:main",
     async config(_config) {
       let viteRscConfig: UserConfig = {
+        define: {
+          "import.meta.env.TEUL_CONFIG_RSC_BASE": JSON.stringify(
+            config.rscBase,
+          ),
+          "import.meta.env.TEUL_CONFIG_RSC_EXTENSION": JSON.stringify(
+            config.rscExtension,
+          ),
+        },
         environments: {
           client: {
             build: {

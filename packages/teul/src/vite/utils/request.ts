@@ -1,43 +1,34 @@
-import type { ReactFormState } from "react-dom/client";
-import type {
-  HandleRequest as HandleRequest,
-  HandlerContext,
-} from "../../types.js";
 import type { TeulConfig } from "../../config.js";
+import type { HandleRequest, HandlerContext } from "../../types.js";
 import { decodeRscPath } from "../../utils/path.js";
 
 type HandleRequestInput = Parameters<HandleRequest>[0];
 
 export async function getInput(
   ctx: HandlerContext,
-  config: Pick<Required<TeulConfig>, "distDir" | "rsc">,
+  config: Pick<Required<TeulConfig>, "distDir" | "rscBase" | "rscExtension">,
   decodeReply: (
     body: string | FormData,
     options?: unknown,
   ) => Promise<unknown[]>,
-  decodeAction: (body: FormData) => Promise<() => Promise<void>>,
-  decodeFormState: (
-    actionResult: unknown,
-    body: FormData,
-  ) => Promise<ReactFormState | undefined>,
 ) {
   const basePath = "/";
   const url = new URL(ctx.req.url);
-  const rscBase = config.rsc.base!.startsWith("/")
-    ? config.rsc.base!
-    : basePath + config.rsc.base!;
+  const rscBase = config.rscBase.startsWith("/")
+    ? config.rscBase
+    : basePath + config.rscBase;
   const rscPathPrefix = rscBase + "/";
   let rscPath: string | undefined;
   let temporaryReferences: unknown | undefined;
   let input: HandleRequestInput;
+
   if (url.pathname.startsWith(rscPathPrefix)) {
-    // Remove RSC extension first, then decode
-    let encodedPath = decodeURI(url.pathname.slice(rscPathPrefix.length));
-    const rscExtension = config.rsc?.extension ?? ".rsc";
-    if (encodedPath.endsWith(rscExtension)) {
-      encodedPath = encodedPath.slice(0, -rscExtension.length);
-    }
-    rscPath = decodeRscPath(encodedPath);
+    // 아래는 RSC 요청처리 과정입니다
+    const rscExtension = config.rscExtension;
+    rscPath = decodeRscPath(
+      decodeURI(url.pathname.slice(rscPathPrefix.length)),
+      rscExtension,
+    );
 
     // client RSC request
     let rscParams: unknown = url.searchParams;
@@ -54,33 +45,10 @@ export async function getInput(
       req: ctx.req,
     };
   } else if (ctx.req.method === "POST") {
-    const contentType = ctx.req.headers.get("content-type");
-    if (
-      typeof contentType === "string" &&
-      contentType.startsWith("multipart/form-data")
-    ) {
-      // server action: no js (progressive enhancement)
-      const formData = (await getActionBody(ctx.req)) as FormData;
-      const decodedAction = await decodeAction(formData);
-      input = {
-        type: "action",
-        fn: async () => {
-          const result = await decodedAction();
-          return await decodeFormState(result, formData);
-        },
-        pathname: decodeURI(url.pathname),
-        req: ctx.req,
-      };
-    } else {
-      // POST API request
-      input = {
-        type: "custom",
-        pathname: decodeURI(url.pathname),
-        req: ctx.req,
-      };
-    }
+    // TODO server Action 구현
+    throw new Error("Post API (서버 액션)은 아직 구현 전 입니다");
   } else {
-    // SSR
+    // 아래는 SSR 처리 과정입니다
     input = {
       type: "custom",
       pathname: decodeURI(url.pathname),

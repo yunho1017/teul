@@ -8,7 +8,7 @@ import { loadSsrEntryModule } from "./utils/vite.js";
 
 export async function processBuild(
   viteConfig: Pick<ViteConfig, "root">,
-  config: Pick<Required<TeulConfig>, "distDir" | "rsc">,
+  config: Pick<Required<TeulConfig>, "distDir" | "rscBase" | "rscExtension">,
   emitStaticFile: (
     rootDir: string,
     config: Pick<Required<TeulConfig>, "distDir">,
@@ -35,7 +35,7 @@ export async function processBuild(
     renderRsc: renderUtils.renderRsc,
     renderHtml: renderUtils.renderHtml,
     rscPath2pathname: (rscPath) =>
-      joinPath(config.rsc.base!, encodeRscPath(rscPath)),
+      joinPath(config.rscBase, encodeRscPath(rscPath, config.rscExtension)),
     generateFile: async (
       pathname: string,
       body: Promise<ReadableStream | string>,
