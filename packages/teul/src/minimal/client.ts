@@ -76,20 +76,11 @@ const ENTRY = "e";
 const SET_ELEMENTS = "s";
 const FETCH_RSC_INTERNAL = "f";
 
-type FetchRscInternal = {
-  (
-    rscPath: string,
-    rscParams: unknown,
-    prefetchOnly?: undefined | false,
-    fetchFn?: typeof fetch,
-  ): Promise<Elements>;
-  (
-    rscPath: string,
-    rscParams: unknown,
-    prefetchOnly: true,
-    fetchFn?: typeof fetch,
-  ): void;
-};
+type FetchRscInternal = (
+  rscPath: string,
+  rscParams: unknown,
+  fetchFn?: typeof fetch,
+) => Promise<Elements>;
 
 type FetchCache = {
   [ENTRY]?: [
@@ -103,58 +94,22 @@ type FetchCache = {
 
 const defaultFetchCache: FetchCache = {};
 
-type PrefetchedEntry =
-  | Promise<Response> // from html
-  | [
-      responsePromise: Promise<Response>,
-      rscParams?: unknown,
-      temporaryReferences?: ReturnType<typeof createTemporaryReferenceSet>,
-    ]; // from prefetch
-
 /**
  * RSC 페칭 함수 생성
  */
 const createFetchRscInternal =
   (fetchCache: FetchCache): FetchRscInternal =>
-  (
-    rscPath: string,
-    rscParams: unknown,
-    prefetchOnly?: boolean,
-    fetchFn = fetch,
-  ) => {
-    const prefetched: Record<string, PrefetchedEntry> = ((
-      globalThis as any
-    ).__TEUL_PREFETCHED__ ||= {});
-    let prefetchedEntry = prefetchOnly ? undefined : prefetched[rscPath];
-    delete prefetched[rscPath];
-
-    if (prefetchedEntry) {
-      if (Array.isArray(prefetchedEntry)) {
-        if (prefetchedEntry[1] !== rscParams) {
-          prefetchedEntry = undefined;
-        }
-      } else {
-        prefetchedEntry = [prefetchedEntry];
-      }
-    }
-
-    const temporaryReferences =
-      prefetchedEntry?.[2] || createTemporaryReferenceSet();
+  (rscPath: string, rscParams: unknown, fetchFn = fetch) => {
+    const temporaryReferences = createTemporaryReferenceSet();
     const url = BASE_RSC_PATH + encodeRscPath(rscPath);
-    const responsePromise = prefetchedEntry
-      ? prefetchedEntry[0]
-      : rscParams === undefined
+    const responsePromise =
+      rscParams === undefined
         ? fetchFn(url)
         : rscParams instanceof URLSearchParams
           ? fetchFn(url + "?" + rscParams)
           : encodeReply(rscParams, { temporaryReferences }).then(
               (body: string) => fetchFn(url, { method: "POST", body }),
             );
-
-    if (prefetchOnly) {
-      prefetched[rscPath] = [responsePromise, rscParams, temporaryReferences];
-      return undefined as never;
-    }
 
     return createFromFetch<Elements>(checkStatus(responsePromise), {
       callServer: (funcId: string, args: unknown[]) =>
@@ -203,24 +158,6 @@ export const fetchRsc = (
   return data;
 };
 
-/**
- * RSC 프리페칭
- */
-export const prefetchRsc = (
-  rscPath: string,
-  rscParams?: unknown,
-  fetchCache = defaultFetchCache,
-): void => {
-  const fetchRscInternal = fetchCache[FETCH_RSC_INTERNAL]!;
-  const prefetched: Record<string, PrefetchedEntry> = ((
-    globalThis as any
-  ).__TEUL_PREFETCHED__ ||= {});
-  const prefetchedEntry = prefetched[rscPath];
-  if (Array.isArray(prefetchedEntry) && prefetchedEntry[1] === rscParams) {
-    return; // already prefetched
-  }
-  fetchRscInternal(rscPath, rscParams, true);
-};
 
 const RefetchContext = createContext<
   (rscPath: string, rscParams?: unknown) => Promise<void>

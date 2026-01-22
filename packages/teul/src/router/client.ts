@@ -8,7 +8,6 @@ import type {
   ReactElement,
   ReactNode,
   Ref,
-  RefObject,
   TransitionFunction,
 } from "react";
 import {
@@ -21,16 +20,14 @@ import {
   useEffect,
   useRef,
   useState,
-  useTransition,
 } from "react";
 
 import {
-  prefetchRsc,
   Root,
   Slot,
-  useRefetch,
   useEnhanceFetchRscInternal_UNSTABLE as useEnhanceFetchRscInternal,
   useElementsPromise_UNSTABLE as useElementsPromise,
+  useRefetch,
 } from "../minimal/client.js";
 import type { RouteProps } from "./common.js";
 import {
@@ -101,22 +98,12 @@ type ChangeRoute = (
   },
 ) => Promise<void>;
 
-type PrefetchRoute = (route: RouteProps) => void;
-
-type ChangeRouteEvent = "start" | "complete";
-type ChangeRouteCallback = (route: RouteProps) => void;
-
 /**
  * Router Context (내부용)
  */
 const RouterContext = createContext<{
   route: RouteProps;
   changeRoute: ChangeRoute;
-  prefetchRoute: PrefetchRoute;
-  routeChangeEvents: Record<
-    "on" | "off",
-    (event: ChangeRouteEvent, handler: ChangeRouteCallback) => void
-  >;
 } | null>(null);
 
 /**
@@ -128,7 +115,7 @@ export function useRouter() {
     throw new Error("Missing Router");
   }
 
-  const { route, changeRoute, prefetchRoute } = router;
+  const { route, changeRoute } = router;
 
   const push = useCallback(
     async (to: string, options?: { scroll?: boolean }) => {
@@ -173,14 +160,6 @@ export function useRouter() {
     window.history.forward();
   }, []);
 
-  const prefetch = useCallback(
-    (to: string) => {
-      const url = new URL(to, window.location.href);
-      prefetchRoute(parseRoute(url));
-    },
-    [prefetchRoute],
-  );
-
   return {
     ...route,
     push,
@@ -188,56 +167,24 @@ export function useRouter() {
     reload,
     back,
     forward,
-    prefetch,
-    unstable_events: router.routeChangeEvents,
   };
-}
-
-/**
- * Ref 공유 헬퍼 (Link ref 처리용)
- */
-function useSharedRef<T>(
-  ref: Ref<T | null> | undefined,
-): [RefObject<T | null>, (node: T | null) => void] {
-  const managedRef = useRef<T>(null);
-
-  const handleRef = useCallback(
-    (node: T | null): void => {
-      managedRef.current = node;
-      if (typeof ref === "function") {
-        ref(node);
-      } else if (ref) {
-        ref.current = node;
-      }
-    },
-    [ref],
-  );
-
-  return [managedRef, handleRef];
 }
 
 export type LinkProps = {
   to: string;
   children: ReactNode;
   scroll?: boolean;
-  unstable_pending?: ReactNode;
-  unstable_prefetchOnEnter?: boolean;
-  unstable_prefetchOnView?: boolean;
-  unstable_startTransition?: ((fn: TransitionFunction) => void) | undefined;
   ref?: Ref<HTMLAnchorElement> | undefined;
 } & Omit<AnchorHTMLAttributes<HTMLAnchorElement>, "href">;
 
 /**
  * Link 컴포넌트 - 클라이언트 사이드 네비게이션
+ * TODO: prefetched 기능
  */
 export function Link({
   to,
   children,
   scroll,
-  unstable_pending,
-  unstable_prefetchOnEnter,
-  unstable_prefetchOnView,
-  unstable_startTransition,
   ref: refProp,
   ...props
 }: LinkProps): ReactElement {
@@ -247,49 +194,13 @@ export function Link({
     : () => {
         throw new Error("Missing Router");
       };
-  const prefetchRoute = router
-    ? router.prefetchRoute
-    : () => {
-        throw new Error("Missing Router");
-      };
 
-  const [isPending, startTransition] = useTransition();
-  const startTransitionFn =
-    unstable_startTransition ||
-    (unstable_pending && startTransition) ||
-    ((fn: TransitionFunction) => fn());
-  const [ref, setRef] = useSharedRef<HTMLAnchorElement>(refProp);
-
-  useEffect(() => {
-    if (unstable_prefetchOnView && ref.current) {
-      const observer = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-              const url = new URL(to, window.location.href);
-              if (router && url.href !== window.location.href) {
-                const route = parseRoute(url);
-                router.prefetchRoute(route);
-              }
-            }
-          });
-        },
-        { threshold: 0.1 },
-      );
-
-      observer.observe(ref.current);
-
-      return () => {
-        observer.disconnect();
-      };
-    }
-  }, [unstable_prefetchOnView, router, to, ref]);
+  const startTransitionFn = (fn: TransitionFunction) => fn();
 
   const internalOnClick = () => {
     const url = new URL(to, window.location.href);
     if (url.href !== window.location.href) {
       const route = parseRoute(url);
-      prefetchRoute(route);
       startTransitionFn(async () => {
         const currentPath = window.location.pathname;
         const newPath = url.pathname !== currentPath;
@@ -316,26 +227,7 @@ export function Link({
     }
   };
 
-  const onMouseEnter = unstable_prefetchOnEnter
-    ? (event: MouseEvent<HTMLAnchorElement>) => {
-        const url = new URL(to, window.location.href);
-        if (url.href !== window.location.href) {
-          const route = parseRoute(url);
-          prefetchRoute(route);
-        }
-        props.onMouseEnter?.(event);
-      }
-    : props.onMouseEnter;
-
-  const ele = createElement(
-    "a",
-    { ...props, href: to, onClick, onMouseEnter, ref: setRef },
-    children,
-  );
-
-  if (isPending && unstable_pending !== undefined) {
-    return createElement(Fragment, null, ele, unstable_pending);
-  }
+  const ele = createElement("a", { ...props, href: to, onClick }, children);
 
   return ele;
 }
@@ -395,7 +287,6 @@ const getRouteSlotId = (path: string) => "route:" + decodeURI(path);
  * 내부 Router 컴포넌트
  */
 const InnerRouter = ({ initialRoute }: { initialRoute: RouteProps }) => {
-  const requestedRouteRef = useRef<RouteProps>(initialRoute);
   const staticPathSetRef = useRef(new Set<string>());
   const cachedIdSetRef = useRef(new Set<string>());
 
@@ -438,19 +329,9 @@ const InnerRouter = ({ initialRoute }: { initialRoute: RouteProps }) => {
         return fetchFn(input, init);
       };
     return enhanceFetchRscInternal((fetchRscInternal) => {
-      return ((
-        rscPath: string,
-        rscParams: unknown,
-        prefetchOnly?: any,
-        fetchFn = fetch,
-      ) => {
+      return ((rscPath: string, rscParams: unknown, fetchFn = fetch) => {
         const enhancedFetch = enhanceFetch(fetchFn);
-        return fetchRscInternal(
-          rscPath,
-          rscParams,
-          prefetchOnly as undefined,
-          enhancedFetch,
-        );
+        return fetchRscInternal(rscPath, rscParams, enhancedFetch);
       }) as typeof fetchRscInternal;
     });
   }, [enhanceFetchRscInternal]);
@@ -460,53 +341,6 @@ const InnerRouter = ({ initialRoute }: { initialRoute: RouteProps }) => {
     ...initialRoute,
     hash: "", // SSR hydration 에러 방지
   }));
-
-  // Route change events 설정
-  const routeChangeListenersRef =
-    useRef<
-      [
-        Record<
-          "on" | "off",
-          (event: ChangeRouteEvent, handler: ChangeRouteCallback) => void
-        >,
-        (
-          eventType: ChangeRouteEvent,
-          eventRoute: Parameters<ChangeRouteCallback>[0],
-        ) => void,
-      ]
-    >(null);
-
-  if (routeChangeListenersRef.current === null) {
-    const listeners: Record<ChangeRouteEvent, Set<ChangeRouteCallback>> = {
-      start: new Set(),
-      complete: new Set(),
-    };
-
-    const executeListeners = (
-      eventType: ChangeRouteEvent,
-      eventRoute: Parameters<ChangeRouteCallback>[0],
-    ) => {
-      const eventListenersSet = listeners[eventType];
-      if (!eventListenersSet.size) {
-        return;
-      }
-      for (const listener of eventListenersSet) {
-        listener(eventRoute);
-      }
-    };
-
-    const events = (() => {
-      const on = (event: ChangeRouteEvent, handler: ChangeRouteCallback) => {
-        listeners[event].add(handler);
-      };
-      const off = (event: ChangeRouteEvent, handler: ChangeRouteCallback) => {
-        listeners[event].delete(handler);
-      };
-      return { on, off };
-    })();
-
-    routeChangeListenersRef.current = [events, executeListeners];
-  }
 
   // Hash 포함한 실제 route로 업데이트
   useEffect(() => {
@@ -522,15 +356,11 @@ const InnerRouter = ({ initialRoute }: { initialRoute: RouteProps }) => {
     });
   }, [initialRoute]);
 
-  const [routeChangeEvents, executeListeners] = routeChangeListenersRef.current;
   const [err, setErr] = useState<unknown>(null);
 
   const changeRoute: ChangeRoute = useCallback(
     async (route, options) => {
-      requestedRouteRef.current = route;
-      executeListeners("start", route);
-      const startTransitionFn =
-        options.unstable_startTransition || ((fn: TransitionFunction) => fn());
+      const startTransitionFn = (fn: TransitionFunction) => fn();
       setErr(null);
 
       const { skipRefetch } = options || {};
@@ -550,20 +380,10 @@ const InnerRouter = ({ initialRoute }: { initialRoute: RouteProps }) => {
           handleScroll();
         }
         setRoute(route);
-        executeListeners("complete", route);
       });
     },
-    [executeListeners, refetch],
+    [refetch],
   );
-
-  const prefetchRoute: PrefetchRoute = useCallback((route) => {
-    if (staticPathSetRef.current.has(route.path)) {
-      return;
-    }
-    const rscPath = encodeRoutePath(route.path);
-    const rscParams = createRscParams(route.query);
-    prefetchRsc(rscPath, rscParams);
-  }, []);
 
   // Popstate (뒤로가기/앞으로가기)
   useEffect(() => {
@@ -592,8 +412,6 @@ const InnerRouter = ({ initialRoute }: { initialRoute: RouteProps }) => {
       value: {
         route,
         changeRoute,
-        prefetchRoute,
-        routeChangeEvents,
       },
     },
     rootElement,
@@ -625,14 +443,6 @@ const notAvailableInServer = (name: string) => () => {
   throw new Error(`${name} is not in the server`);
 };
 
-const MOCK_ROUTE_CHANGE_LISTENER: Record<
-  "on" | "off",
-  (event: ChangeRouteEvent, handler: ChangeRouteCallback) => void
-> = {
-  on: () => notAvailableInServer("routeChange:on"),
-  off: () => notAvailableInServer("routeChange:off"),
-};
-
 /**
  * ServerRouter (SSR용, 내부 API)
  */
@@ -660,8 +470,6 @@ export function INTERNAL_ServerRouter({
         value: {
           route,
           changeRoute: notAvailableInServer("changeRoute"),
-          prefetchRoute: notAvailableInServer("prefetchRoute"),
-          routeChangeEvents: MOCK_ROUTE_CHANGE_LISTENER,
         },
       },
       rootElement,
