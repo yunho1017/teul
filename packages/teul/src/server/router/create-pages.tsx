@@ -5,9 +5,10 @@ import {
   parsePathWithSlug,
   pathSpecAsString,
   type PathSpec,
-} from "../utils/path.js";
-import { Children, Slot } from "../minimal/client.js";
-import { ErrorBoundary } from "./client.js";
+} from "../../utils/path.js";
+import { Children } from "../../client/rsc/children.js";
+import { Slot } from "../../client/rsc/slot.js";
+import { ErrorBoundary } from "../../client/router/error-boundary.js";
 
 // TODO: dynamic
 type RootItem = {

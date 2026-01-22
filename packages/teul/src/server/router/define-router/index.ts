@@ -1,4 +1,4 @@
-import { defineServer } from "../../minimal/server.js";
+import { defineServer } from "../common.js";
 import { ConfigManager } from "./config.js";
 import { EntriesManager } from "./entries.js";
 import { createHandleBuild, createHandleRequest } from "./handlers.js";

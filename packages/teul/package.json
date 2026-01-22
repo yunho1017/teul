@@ -31,16 +31,12 @@
       "default": "./dist/config.js"
     },
     "./router/server": {
-      "types": "./dist/router/server.d.ts",
-      "default": "./dist/router/server.js"
+      "types": "./dist/router-server.d.ts",
+      "default": "./dist/router-server.js"
     },
     "./router/client": {
-      "types": "./dist/router/client.d.ts",
-      "default": "./dist/router/client.js"
-    },
-    "./minimal/client": {
-      "types": "./dist/minimal/client.d.ts",
-      "default": "./dist/minimal/client.js"
+      "types": "./dist/router-client.d.ts",
+      "default": "./dist/router-client.js"
     }
   },
   "bin": {

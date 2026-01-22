@@ -4,8 +4,8 @@ import { renderToReadableStream } from "react-dom/server.edge";
 import { captureOwnerStack, use, type ReactNode } from "react";
 import type { ReactFormState } from "react-dom/client";
 import { injectRSCPayload } from "rsc-html-stream/server";
-import { INTERNAL_ServerRoot } from "../../minimal/client.js";
 import { loadBootstrapScriptContent } from "../utils/vite.js";
+import { Root } from "../../router-server.js";
 
 type RscElementsPayload = Record<string, unknown>;
 type RscHtmlPayload = ReactNode;
@@ -51,9 +51,9 @@ export async function renderHTML(
     htmlPromise ??= createFromReadableStream<RscHtmlPayload>(rscHtmlStream);
 
     return (
-      <INTERNAL_ServerRoot elementsPromise={elementsPromise}>
+      <Root elementsPromise={elementsPromise}>
         <HtmlNodeWrapper>{use(htmlPromise)}</HtmlNodeWrapper>
-      </INTERNAL_ServerRoot>
+      </Root>
     );
   }
 

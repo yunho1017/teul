@@ -5,7 +5,7 @@ export const SRC_SERVER_ENTRY = "server";
 export const DEFAULT_PORT = 3000;
 
 import type { TeulConfig } from "../config.js";
-import type { fsRouter } from "../router/fs-router.js";
+import type { fsRouter } from "../server/router/fs-router.js";
 
 const EXTENSIONS = [".js", ".ts", ".tsx", ".jsx", ".mjs", ".cjs"];
 

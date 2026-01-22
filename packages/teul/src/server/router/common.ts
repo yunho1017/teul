@@ -1,3 +1,5 @@
+import type { ServerEntry } from "../../types.js";
+
 export type RouteProps<Path extends string = string> = {
   path: Path;
   query: string;
@@ -88,3 +90,7 @@ export const HAS404_ID = "HAS404";
  * 서버는 이 ID들을 응답에서 제외하여 네트워크 전송량을 줄임
  */
 export const SKIP_HEADER = "X-Teul-Skip";
+
+export function defineServer(fns: ServerEntry["default"]) {
+  return fns;
+}

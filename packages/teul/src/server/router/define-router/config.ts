@@ -1,4 +1,4 @@
-import { getPathMapping, path2regexp } from "../../utils/path.js";
+import { getPathMapping, path2regexp } from "../../../utils/path.js";
 import { ROUTE_SLOT_ID_PREFIX } from "./constants.js";
 import type { DefineRouterFunctions, MyConfig } from "./types.js";
 import { pathSpec2pathname } from "./utils.js";

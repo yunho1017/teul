@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import type { PathSpec } from "../../utils/path.js";
+import type { PathSpec } from "../../../utils/path.js";
 
 export type SlotId = string;
 

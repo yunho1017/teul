@@ -1,4 +1,4 @@
-import { parseJSONSafe } from "../../utils/json.js";
+import { parseJSONSafe } from "../../../utils/json.js";
 import {
   decodeRoutePath,
   HAS404_ID,

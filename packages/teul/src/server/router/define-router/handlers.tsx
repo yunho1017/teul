@@ -1,6 +1,5 @@
-import type { defineServer } from "../../minimal/server.js";
-import { INTERNAL_ServerRouter } from "../client.js";
-import { encodeRoutePath } from "../common.js";
+import { Router } from "../../router.js";
+import { defineServer, encodeRoutePath } from "../common.js";
 import type { ConfigManager } from "./config.js";
 import type { EntriesManager } from "./entries.js";
 
@@ -53,7 +52,7 @@ export const createHandleRequest = (
           return null;
         }
         const html = (
-          <INTERNAL_ServerRouter
+          <Router
             route={{ path: pathname, query, hash: "" }}
             httpstatus={httpstatus}
           />
@@ -150,7 +149,7 @@ export const createHandleBuild = (
       if (specs.isStatic && entries) {
         const rscPath = encodeRoutePath(pathname);
         const html = (
-          <INTERNAL_ServerRouter
+          <Router
             route={{ path: pathname, query: "", hash: "" }}
             httpstatus={specs.is404 ? 404 : 200}
           />

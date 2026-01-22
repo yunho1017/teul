@@ -1,4 +1,4 @@
-import type { PathSpec } from "../../utils/path.js";
+import type { PathSpec } from "../../../utils/path.js";
 
 export const parseRscParams = (
   rscParams: unknown,
