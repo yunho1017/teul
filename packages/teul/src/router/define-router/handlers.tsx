@@ -1,4 +1,3 @@
-import { createElement } from "react";
 import type { defineServer } from "../../minimal/server.js";
 import { INTERNAL_ServerRouter } from "../client.js";
 import { encodeRoutePath } from "../common.js";
@@ -53,10 +52,12 @@ export const createHandleRequest = (
         if (!entries) {
           return null;
         }
-        const html = createElement(INTERNAL_ServerRouter, {
-          route: { path: pathname, query, hash: "" },
-          httpstatus,
-        });
+        const html = (
+          <INTERNAL_ServerRouter
+            route={{ path: pathname, query, hash: "" }}
+            httpstatus={httpstatus}
+          />
+        );
 
         return renderHtml(entries, html, {
           rscPath,
@@ -148,10 +149,12 @@ export const createHandleBuild = (
       const entries = entriesCache.get(pathname);
       if (specs.isStatic && entries) {
         const rscPath = encodeRoutePath(pathname);
-        const html = createElement(INTERNAL_ServerRouter, {
-          route: { path: pathname, query: "", hash: "" },
-          httpstatus: specs.is404 ? 404 : 200,
-        });
+        const html = (
+          <INTERNAL_ServerRouter
+            route={{ path: pathname, query: "", hash: "" }}
+            httpstatus={specs.is404 ? 404 : 200}
+          />
+        );
 
         await generateFile(
           pathname,

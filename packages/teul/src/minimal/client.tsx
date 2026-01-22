@@ -2,7 +2,6 @@
 
 import {
   createContext,
-  createElement,
   memo,
   startTransition,
   use,
@@ -20,11 +19,12 @@ const { createFromFetch, encodeReply, createTemporaryReferenceSet } =
   RSDWClient;
 
 const DEFAULT_HTML_HEAD = [
-  createElement("meta", { charSet: "utf-8" }),
-  createElement("meta", {
-    name: "viewport",
-    content: "width=device-width, initial-scale=1",
-  }),
+  <meta key="charset" charSet="utf-8" />,
+  <meta
+    key="viewport"
+    name="viewport"
+    content="width=device-width, initial-scale=1"
+  />,
 ];
 
 const BASE_RSC_PATH = `${import.meta.env?.VITE_CONFIG_BASE_PATH || ""}/RSC/`;
@@ -50,7 +50,7 @@ type Elements = Record<string, unknown>;
 /**
  * Elements Promise 병합 유틸
  */
-const getCached = <T>(c: () => T, m: WeakMap<object, T>, k: object): T =>
+const getCached = <T,>(c: () => T, m: WeakMap<object, T>, k: object): T =>
   (m.has(k) ? m : m.set(k, c())).get(k) as T;
 
 const cache1 = new WeakMap();
@@ -158,7 +158,6 @@ export const fetchRsc = (
   return data;
 };
 
-
 const RefetchContext = createContext<
   (rscPath: string, rscParams?: unknown) => Promise<void>
 >(() => {
@@ -233,19 +232,15 @@ export const Root = ({
     [fetchCache],
   );
 
-  return createElement(
-    EnhanceFetchRscInternalContext,
-    { value: enhanceFetchRscInternal },
-    createElement(
-      RefetchContext,
-      { value: refetch },
-      createElement(
-        ElementsContext,
-        { value: elements },
-        ...DEFAULT_HTML_HEAD,
-        children,
-      ),
-    ),
+  return (
+    <EnhanceFetchRscInternalContext.Provider value={enhanceFetchRscInternal}>
+      <RefetchContext.Provider value={refetch}>
+        <ElementsContext.Provider value={elements}>
+          {DEFAULT_HTML_HEAD}
+          {children}
+        </ElementsContext.Provider>
+      </RefetchContext.Provider>
+    </EnhanceFetchRscInternalContext.Provider>
   );
 };
 
@@ -291,10 +286,10 @@ export const Slot = ({
   if (!isValidElement) {
     throw new Error("Invalid element: " + id);
   }
-  return createElement(
-    ChildrenContextProvider,
-    { value: children },
-    createElement(SlotElementWrapper, null, element as ReactNode),
+  return (
+    <ChildrenContextProvider value={children}>
+      <SlotElementWrapper>{element as ReactNode}</SlotElementWrapper>
+    </ChildrenContextProvider>
   );
 };
 
@@ -310,10 +305,9 @@ export const INTERNAL_ServerRoot = ({
 }: {
   elementsPromise: Promise<Elements>;
   children: ReactNode;
-}) =>
-  createElement(
-    ElementsContext,
-    { value: elementsPromise },
-    ...DEFAULT_HTML_HEAD,
-    children,
-  );
+}) => (
+  <ElementsContext.Provider value={elementsPromise}>
+    {DEFAULT_HTML_HEAD}
+    {children}
+  </ElementsContext.Provider>
+);

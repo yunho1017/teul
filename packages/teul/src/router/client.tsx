@@ -2,8 +2,6 @@
 
 import type {
   AnchorHTMLAttributes,
-  ComponentProps,
-  FunctionComponent,
   MouseEvent,
   ReactElement,
   ReactNode,
@@ -13,8 +11,6 @@ import type {
 import {
   Component,
   createContext,
-  createElement,
-  Fragment,
   useCallback,
   useContext,
   useEffect,
@@ -25,8 +21,8 @@ import {
 import {
   Root,
   Slot,
-  useEnhanceFetchRscInternal_UNSTABLE as useEnhanceFetchRscInternal,
   useElementsPromise_UNSTABLE as useElementsPromise,
+  useEnhanceFetchRscInternal_UNSTABLE as useEnhanceFetchRscInternal,
   useRefetch,
 } from "../minimal/client.js";
 import type { RouteProps } from "./common.js";
@@ -227,19 +223,23 @@ export function Link({
     }
   };
 
-  const ele = createElement("a", { ...props, href: to, onClick }, children);
-
-  return ele;
+  return (
+    <a {...props} href={to} onClick={onClick}>
+      {children}
+    </a>
+  );
 }
 
 /**
  * 에러 렌더링 헬퍼
  */
 function renderError(message: string) {
-  return createElement(
-    "html",
-    null,
-    createElement("body", null, createElement("h1", null, message)),
+  return (
+    <html>
+      <body>
+        <h1>{message}</h1>
+      </body>
+    </html>
   );
 }
 
@@ -400,21 +400,23 @@ const InnerRouter = ({ initialRoute }: { initialRoute: RouteProps }) => {
   }, [changeRoute]);
 
   const routeElement =
-    err !== null
-      ? createElement("h1", null, "Error: " + String(err))
-      : createElement(Slot, { id: getRouteSlotId(route.path) });
+    err !== null ? (
+      <h1>Error: {String(err)}</h1>
+    ) : (
+      <Slot id={getRouteSlotId(route.path)} />
+    );
 
-  const rootElement = createElement(Slot, { id: "root" }, routeElement);
+  const rootElement = <Slot id="root">{routeElement}</Slot>;
 
-  return createElement(
-    RouterContext,
-    {
-      value: {
+  return (
+    <RouterContext.Provider
+      value={{
         route,
         changeRoute,
-      },
-    },
-    rootElement,
+      }}
+    >
+      {rootElement}
+    </RouterContext.Provider>
   );
 };
 
@@ -429,13 +431,10 @@ export function Router({
   const initialRscPath = encodeRoutePath(initialRoute.path);
   const initialRscParams = createRscParams(initialRoute.query);
 
-  return createElement(
-    Root as FunctionComponent<Omit<ComponentProps<typeof Root>, "children">>,
-    {
-      initialRscPath,
-      initialRscParams,
-    },
-    createElement(InnerRouter, { initialRoute }),
+  return (
+    <Root initialRscPath={initialRscPath} initialRscParams={initialRscParams}>
+      <InnerRouter initialRoute={initialRoute} />
+    </Root>
   );
 }
 
@@ -453,26 +452,24 @@ export function INTERNAL_ServerRouter({
   route: RouteProps;
   httpstatus: number;
 }) {
-  const routeElement = createElement(Slot, { id: getRouteSlotId(route.path) });
-  const rootElement = createElement(
-    Slot,
-    { id: "root" },
-    createElement("meta", { name: "httpstatus", content: `${httpstatus}` }),
-    routeElement,
+  const routeElement = <Slot id={getRouteSlotId(route.path)} />;
+  const rootElement = (
+    <Slot id="root">
+      <meta name="httpstatus" content={`${httpstatus}`} />
+      {routeElement}
+    </Slot>
   );
 
-  return createElement(
-    Fragment,
-    null,
-    createElement(
-      RouterContext,
-      {
-        value: {
+  return (
+    <>
+      <RouterContext.Provider
+        value={{
           route,
           changeRoute: notAvailableInServer("changeRoute"),
-        },
-      },
-      rootElement,
-    ),
+        }}
+      >
+        {rootElement}
+      </RouterContext.Provider>
+    </>
   );
 }

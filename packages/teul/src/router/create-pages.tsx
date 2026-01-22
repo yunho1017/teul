@@ -1,4 +1,3 @@
-import { createElement, Fragment } from "react";
 import type { FunctionComponent, ReactNode } from "react";
 import { defineRouter } from "./define-router/index.js";
 import {
@@ -33,17 +32,14 @@ export type CreateLayout = <Path extends string>(layout: {
 /**
  * Default root component for all pages
  */
-const DefaultRoot = ({ children }: { children: ReactNode }) =>
-  createElement(
-    ErrorBoundary,
-    null,
-    createElement(
-      "html",
-      null,
-      createElement("head", null),
-      createElement("body", null, children),
-    ),
-  );
+const DefaultRoot = ({ children }: { children: ReactNode }) => (
+  <ErrorBoundary>
+    <html>
+      <head />
+      <body>{children}</body>
+    </html>
+  </ErrorBoundary>
+);
 
 const createNestedElements = (
   elements: {
@@ -53,8 +49,9 @@ const createNestedElements = (
   children: ReactNode,
 ) => {
   return elements.reduceRight<ReactNode>(
-    (result, element) =>
-      createElement(element.component, element.props, result),
+    (result, element) => (
+      <element.component {...element.props}>{result}</element.component>
+    ),
     children,
   );
 };
@@ -222,18 +219,19 @@ export const createPages = <AllPages extends any[]>(
         throw new Error("Route not found: " + path);
       }
 
-      const pageComponent = staticComponentMap.get(
+      const PageComponent = staticComponentMap.get(
         joinPath(routePath, "page").slice(1),
       );
 
-      if (!pageComponent) {
+      if (!PageComponent) {
         throw new Error("Page not found: " + path);
       }
 
       // Create page element
-      const pageElement = createElement(
-        pageComponent,
-        query ? { query } : null,
+      const pageElement = query ? (
+        <PageComponent query={query} />
+      ) : (
+        <PageComponent />
       );
 
       // Get all layouts for this path
@@ -246,15 +244,15 @@ export const createPages = <AllPages extends any[]>(
       };
 
       for (const segment of layoutPaths) {
-        const layout = staticComponentMap.get(
+        const Layout = staticComponentMap.get(
           joinPath(segment, "layout").slice(1),
         );
 
-        if (layout) {
-          elements[`layout:${segment}`] = createElement(
-            layout,
-            null,
-            createElement(Children),
+        if (Layout) {
+          elements[`layout:${segment}`] = (
+            <Layout>
+              <Children />
+            </Layout>
           );
         }
       }
@@ -265,25 +263,27 @@ export const createPages = <AllPages extends any[]>(
         props: { id: `layout:${lPath}` },
       }));
 
-      const finalPageChildren = Array.isArray(pageComponent)
-        ? createElement(
-            Fragment,
-            null,
-            pageComponent.map((_comp, order) =>
-              createElement(Slot, {
-                id: `page:${routePath}:${order}`,
-                key: `page:${routePath}:${order}`,
-              }),
-            ),
-          )
-        : createElement(Slot, { id: `page:${routePath}` });
+      const finalPageChildren = Array.isArray(PageComponent) ? (
+        <>
+          {PageComponent.map((_comp, order) => (
+            <Slot
+              id={`page:${routePath}:${order}`}
+              key={`page:${routePath}:${order}`}
+            />
+          ))}
+        </>
+      ) : (
+        <Slot id={`page:${routePath}`} />
+      );
+
+      const RootComponent = rootItem ? rootItem.component : DefaultRoot;
 
       return {
         elements,
-        rootElement: createElement(
-          rootItem ? rootItem.component : DefaultRoot,
-          null,
-          createElement(Children),
+        rootElement: (
+          <RootComponent>
+            <Children />
+          </RootComponent>
         ),
         routeElement: createNestedElements(layouts, finalPageChildren),
       };
