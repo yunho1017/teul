@@ -1,15 +1,15 @@
 // Vite 개발 서버 시작
 import * as vite from "vite";
 import type { TeulConfig } from "../config.js";
-import { rscPlugin } from "./plugin.js";
 import { logger } from "../utils/logger.js";
+import { combinedPlugins } from "./plugins/vite-plugins.js";
 
 export async function startDevServer(
-  config: Required<Omit<TeulConfig, "vite">> & Pick<TeulConfig, "vite">
+  config: Required<Omit<TeulConfig, "vite">> & Pick<TeulConfig, "vite">,
 ) {
   const viteConfig: vite.InlineConfig = {
     configFile: false,
-    plugins: [rscPlugin({ config })],
+    plugins: [combinedPlugins({ config })],
     server: {
       port: config.port,
     },
