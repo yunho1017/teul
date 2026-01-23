@@ -1,4 +1,4 @@
-import { createPages } from "./create-pages.js";
+import { createPages } from "./create-pages/create-pages.js";
 
 /**
  * 파일 시스템 기반 라우터를 생성합니다.

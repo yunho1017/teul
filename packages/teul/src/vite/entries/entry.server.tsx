@@ -1,5 +1,4 @@
 /// <reference types="vite/client" />
-// Server Entry (Teul - Hono 래퍼)
 import { serveStatic } from "@hono/node-server/serve-static";
 import { decodeReply, renderToReadableStream } from "@vitejs/plugin-rsc/rsc";
 import { Hono } from "hono";
@@ -14,12 +13,10 @@ import { loadSsrEntryModule } from "../utils/vite.js";
 type HandleRequestOutput = Awaited<ReturnType<HandleRequest>>;
 
 function createApp(app: Hono) {
-  // Static file serving (for production)
   if (import.meta.env.PROD) {
     app.use("/assets/*", serveStatic({ root: "./dist/public" }));
   }
 
-  // All routes go to serverEntry (RSC Request Handler)
   app.use("*", async (ctx) => {
     console.log(
       "[entry.server] Incoming request:",
@@ -88,5 +85,4 @@ const app = createApp(new Hono());
 
 export default app.fetch;
 
-// Build-time exports
 export { processBuild } from "../build.js";

@@ -14,6 +14,7 @@ export interface RouterProps {
   httpstatus: number;
 }
 
+// 서버용 라우터 (클라이언트(브라우저) 환경에서 사용금지)
 export function Router({ route, httpstatus }: RouterProps) {
   return (
     <RouterContext.Provider

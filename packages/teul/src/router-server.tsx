@@ -1,4 +1,4 @@
-export { createPages } from "./server/router/create-pages.js";
+export { createPages } from "./server/router/create-pages/create-pages.js";
 export { defineRouter } from "./server/router/define-router/define-router.js";
 export { fsRouter } from "./server/router/fs-router.js";
 
