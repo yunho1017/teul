@@ -1,24 +1,14 @@
 {
-  "name": "minipack",
+  "name": "yuno-dev",
   "private": true,
+  "type": "module",
+  "packageManager": "pnpm@10.12.1",
   "scripts": {
-    "build:client": "ROOT_PATH=$PWD yarn workspace client build",
-    "build:server": "ROOT_PATH=$PWD yarn workspace server build",
-    "start": "ROOT_PATH=$PWD node --conditions react-server ./dist/server/app.js"
-  },
-  "dependencies": {
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "dev": "pnpm --filter 01_template dev",
+    "build": "pnpm --filter teul compile && pnpm --filter 01_template build"
   },
   "devDependencies": {
-    "@babel/preset-typescript": "^7.26.0",
-    "@babel/preset-react": "^7.23.3",
-    "@types/react": "^19.0.0",
-    "@types/react-dom": "^19.0.0",
-    "typescript": "^5.7.3"
-  },
-  "workspaces": [
-    "packages/**/*"
-  ],
-  "packageManager": "yarn@1.22.22"
+    "@types/node": "^24.3.1",
+    "typescript": "^5.9.2"
+  }
 }

@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "target": "esnext",
+    "downlevelIteration": true,
+    "esModuleInterop": true,
+    "module": "nodenext",
+    "skipLibCheck": true,
+    "verbatimModuleSyntax": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
+    "jsx": "react-jsx",
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "composite": true,
+    "incremental": true,
+    "noErrorTruncation": true,
+    "rootDir": "./src",
+    "outDir": "./dist",
+    "lib": ["esnext", "dom", "dom.iterable"]
+  },
+  "include": ["src"]
+}
