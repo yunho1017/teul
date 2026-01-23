@@ -1,18 +1,16 @@
 export const Footer = () => {
-  console.log("!!!!!!!footer");
   return (
-    <footer className="p-6 lg:fixed lg:bottom-0 lg:left-0">
-      <div>
-        visit{" "}
+    <footer className="p-6 lg:fixed lg:bottom-0 lg:left-0 lg:right-0 bg-white">
+      <div className="text-sm text-gray-600">
         <a
-          href="https://waku.gg/"
+          href="https://github.com/yuno-dev/teul"
           target="_blank"
           rel="noreferrer"
-          className="mt-4 inline-block underline"
+          className="inline-block underline hover:text-gray-900"
         >
-          waku.gg
-        </a>{" "}
-        to learn more
+          Teul
+        </a>
+        {" - "}A minimal React framework
       </div>
     </footer>
   );

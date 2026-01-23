@@ -31,6 +31,7 @@ Promise.resolve(new Response(new ReadableStream({
   .map((line) => line.trim())
   .join("");
 
+// SSR 전용
 export async function renderHTML(
   rscStream: ReadableStream<Uint8Array>,
   rscHtmlStream: ReadableStream<Uint8Array>,
@@ -56,8 +57,6 @@ export async function renderHTML(
       </Root>
     );
   }
-
-  // render html
 
   const bootstrapScriptContent = await loadBootstrapScriptContent();
 
@@ -97,6 +96,7 @@ export async function renderHTML(
   return responseStream;
 }
 
+// SSR 사용안함
 export async function renderHtmlFallback() {
   const bootstrapScriptContent =
     await import.meta.viteRsc.loadBootstrapScriptContent("index");

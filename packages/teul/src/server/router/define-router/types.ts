@@ -3,6 +3,7 @@ import type { PathSpec } from "../../../utils/path.js";
 
 export type SlotId = string;
 
+// 원본 route config (getConfig)
 export type RouterConfig = {
   type: "route";
   path: PathSpec;
@@ -14,7 +15,8 @@ export type RouterConfig = {
   noSsr?: boolean;
 };
 
-export type MyConfig = {
+// 가공한 route config (routeConfigManager)
+export type MyRouteConfig = {
   type: "route";
   pathSpec: PathSpec;
   pathname: string | undefined;

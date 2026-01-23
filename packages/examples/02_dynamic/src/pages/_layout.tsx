@@ -9,6 +9,7 @@ type RootLayoutProps = { children: ReactNode };
 
 export default async function RootLayout({ children }: RootLayoutProps) {
   const data = await getData();
+
   return (
     <div className="font-['Nunito']">
       <meta name="description" content={data.description} />

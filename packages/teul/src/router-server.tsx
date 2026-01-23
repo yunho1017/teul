@@ -1,5 +1,5 @@
 export { createPages } from "./server/router/create-pages.js";
-export { defineRouter } from "./server/router/define-router/index.js";
+export { defineRouter } from "./server/router/define-router/define-router.js";
 export { fsRouter } from "./server/router/fs-router.js";
 
 // Server Root & Router
