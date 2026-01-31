@@ -44,6 +44,12 @@ export function mainPlugin(config: ResolvedTeulConfig): Plugin {
           "import.meta.env.TEUL_CONFIG_RSC_EXTENSION": JSON.stringify(
             config.rscExtension,
           ),
+          ...Object.fromEntries(
+            Object.entries(process.env).map(([k, v]) => [
+              `process.env.${k}`,
+              JSON.stringify(v),
+            ]),
+          ),
         },
         environments: {
           client: {

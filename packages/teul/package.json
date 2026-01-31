@@ -1,7 +1,7 @@
 {
   "name": "teul",
   "description": "teul(틀) The minimal React framework",
-  "version": "0.0.1-alpha.4",
+  "version": "0.0.1-alpha.5",
   "type": "module",
   "author": "Yuno Seo",
   "keywords": [
@@ -78,7 +78,6 @@
     "dotenv": "^17.2.3",
     "hono": "^4.10.0",
     "magic-string": "^0.30.21",
-    "picocolors": "^1.1.1",
     "rsc-html-stream": "^0.0.7",
     "vite": "^7.2.0"
   },
