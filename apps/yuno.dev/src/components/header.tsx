@@ -57,7 +57,7 @@ export const Header = () => {
                   About
                 </Link>
                 <Link
-                  to="/post/list"
+                  to="/posts/list"
                   className="text-sm md:text-base font-medium text-gray-600 hover:text-blue-600 transition-colors"
                 >
                   Blog
@@ -176,7 +176,7 @@ export const Header = () => {
                   About
                 </Link>
                 <Link
-                  to="/post/list"
+                  to="/posts/list"
                   onClick={() => setIsMobileMenuOpen(false)}
                   className="block px-4 py-3 text-base font-medium text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
                 >
@@ -186,7 +186,9 @@ export const Header = () => {
 
               {/* Social Icons */}
               <div className="px-4 py-6 border-t border-gray-200">
-                <p className="text-sm font-semibold text-gray-900 mb-4">Connect</p>
+                <p className="text-sm font-semibold text-gray-900 mb-4">
+                  Connect
+                </p>
                 <div className="flex items-center gap-6">
                   <a
                     href="https://github.com/yunho1017"

@@ -1,10 +1,10 @@
 import { Link } from "teul/client";
 import { Suspense, lazy } from "react";
-import { RSCRandomDemo } from "../../components/teul/rsc-random-demo";
-import { TeulFlowVisualizer } from "../../components/teul/teul-flow-visualizer";
+import { RSCRandomDemo } from "./_components/rsc-random-demo";
+import { TeulFlowVisualizer } from "./_components/teul-flow-visualizer";
 
 const InteractiveCounter = lazy(() =>
-  import("../../components/teul/interactive-counter").then((mod) => ({
+  import("./_components/interactive-counter").then((mod) => ({
     default: mod.InteractiveCounter,
   })),
 );
@@ -293,7 +293,7 @@ export async function RSCRandomDemo() {
             Teul GitHub 보러가기
           </a>
           <Link
-            to="/post/list"
+            to="/posts/list"
             className="px-8 py-4 bg-emerald-500 text-white rounded-lg font-semibold hover:bg-emerald-600 transition-all duration-300 text-center"
           >
             Teul 관련 글 보러가기

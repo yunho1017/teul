@@ -1,9 +1,9 @@
 import { Suspense } from "react";
 import { Link } from "teul/client";
 import { getRecentPosts } from "../lib/posts";
-import { HeroTitle } from "../components/hero-title";
-import { PostList } from "../components/post-list";
-import { PostListSkeleton } from "../components/post-list-skeleton";
+import { HeroTitle } from "./_components/hero-title";
+import { PostList } from "../components/post-list/post-list";
+import { PostListSkeleton } from "../components/post-list/post-list-skeleton";
 
 export default function HomePage() {
   const recentPostsPromise = getRecentPosts(5);
@@ -77,7 +77,7 @@ export default function HomePage() {
             최근 글
           </h2>
           <Link
-            to={"/post/list"}
+            to={"/posts/list"}
             className="text-sm md:text-base text-blue-600 hover:text-blue-700 font-medium flex items-center gap-1.5 md:gap-2 group transition-colors"
           >
             전체보기

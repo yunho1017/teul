@@ -19,7 +19,7 @@ export interface Post extends PostMetadata {
 const postsDirectory = path.join(process.cwd(), "content/posts");
 
 // 모든 포스트의 메타데이터 가져오기
-export async function getAllPosts(): Promise<Post[]> {
+export async function getAllPosts(tag?: string): Promise<Post[]> {
   try {
     const fileNames = await fs.readdir(postsDirectory);
     const allPostsData = await Promise.all(
@@ -45,8 +45,16 @@ export async function getAllPosts(): Promise<Post[]> {
         }),
     );
 
+    // 태그 필터링
+    let filteredPosts = allPostsData;
+    if (tag) {
+      filteredPosts = allPostsData.filter((post) =>
+        post.tags.some((postTag: string) => postTag.toLowerCase() === tag.toLowerCase()),
+      );
+    }
+
     // 날짜순으로 정렬 (최신순)
-    return allPostsData.sort((a, b) => {
+    return filteredPosts.sort((a, b) => {
       if (a.date < b.date) {
         return 1;
       } else {
