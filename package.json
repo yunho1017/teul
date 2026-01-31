@@ -4,7 +4,8 @@
   "type": "module",
   "packageManager": "pnpm@10.12.1",
   "scripts": {
-    "compile": "pnpm --filter teul compile"
+    "compile": "pnpm --filter teul compile",
+    "build:yuno.dev": "pnpm compile && pnpm -F yuno.dev build:cloudflare"
   },
   "devDependencies": {
     "@types/node": "^24.3.1",
