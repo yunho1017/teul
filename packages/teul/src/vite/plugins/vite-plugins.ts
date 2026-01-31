@@ -63,7 +63,6 @@ export function combinedPlugins(
     rsc({
       serverHandler: false,
       keepUseCientProxy: true,
-      ignoredPackageWarnings: [/.*/],
       useBuildAppHook: true,
       clientChunks: (meta) => meta.serverChunk,
     }),
