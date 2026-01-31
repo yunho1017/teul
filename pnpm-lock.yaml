@@ -36,8 +36,8 @@ importers:
         specifier: ^3.2.0
         version: 3.2.0(prop-types@15.8.1)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       teul:
-        specifier: 0.0.1-alpha.3
-        version: 0.0.1-alpha.3(@types/node@24.9.1)(jiti@2.6.1)(lightningcss@1.30.1)(react-dom@19.2.3(react@19.2.3))(react-server-dom-webpack@19.2.3(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(webpack@5.102.1))(react@19.2.3)(terser@5.44.0)
+        specifier: 0.0.1-alpha.4
+        version: 0.0.1-alpha.4(@types/node@24.9.1)(jiti@2.6.1)(lightningcss@1.30.1)(react-dom@19.2.3(react@19.2.3))(react-server-dom-webpack@19.2.3(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(webpack@5.102.1))(react@19.2.3)(terser@5.44.0)
     devDependencies:
       '@tailwindcss/vite':
         specifier: 4.1.13
@@ -1934,8 +1934,8 @@ packages:
     engines: {node: '>=10'}
     hasBin: true
 
-  teul@0.0.1-alpha.3:
-    resolution: {integrity: sha512-2IXZVYLsokVmRiaAa3XA744P9zaPwGLLnCjSnYsJy4qcxHh+cUMEc9/gopnkmOS/MkqPdCgL91CypM/BeXr25w==}
+  teul@0.0.1-alpha.4:
+    resolution: {integrity: sha512-u9S0SKNnGaYGQNDdl1km6NPKxJeFaTp70/yYZpNop2caZ9DIMdOBeY/X7m+jSMm3ICLImCSf3dq581iGk4pGfw==}
     engines: {node: ^24.0.0 || ^22.12.0 || ^20.19.0}
     hasBin: true
     peerDependencies:
@@ -3726,7 +3726,7 @@ snapshots:
       commander: 2.20.3
       source-map-support: 0.5.21
 
-  teul@0.0.1-alpha.3(@types/node@24.9.1)(jiti@2.6.1)(lightningcss@1.30.1)(react-dom@19.2.3(react@19.2.3))(react-server-dom-webpack@19.2.3(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(webpack@5.102.1))(react@19.2.3)(terser@5.44.0):
+  teul@0.0.1-alpha.4(@types/node@24.9.1)(jiti@2.6.1)(lightningcss@1.30.1)(react-dom@19.2.3(react@19.2.3))(react-server-dom-webpack@19.2.3(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(webpack@5.102.1))(react@19.2.3)(terser@5.44.0):
     dependencies:
       '@hono/node-server': 1.19.1(hono@4.11.7)
       '@swc/core': 1.13.5
