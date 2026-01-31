@@ -1,6 +1,11 @@
 import type { FunctionComponent, ReactNode } from "react";
-import type { Prettify, ReplaceAll, Split } from "../../../utils/util-types.js";
-import type { RouteProps } from "../common.js";
+import type {
+  Join,
+  Prettify,
+  ReplaceAll,
+  Split,
+} from "../../../utils/util-types.js";
+import type { RouteProps } from "../utils.js";
 
 /**
  * 루트 컴포넌트 정의
@@ -231,141 +236,6 @@ export type HasSlugInPath<T, K extends string> = T extends `/[${K}]/${infer _}`
       ? true
       : false;
 
-/**
- * 경로에서 슬러그 이름들을 추출하는 내부 타입 헬퍼
- *
- * 경로를 "/"로 분리하여 각 세그먼트를 검사하고,
- * [변수명] 패턴에서 변수명만 추출하여 배열로 만듭니다.
- *
- * @private
- */
-type _GetSlugs<
-  Route extends string,
-  SplitRoute extends string[] = Split<Route, "/">,
-  Result extends string[] = [],
-> = SplitRoute extends []
-  ? Result
-  : SplitRoute extends [`${infer MaybeSlug}`, ...infer Rest extends string[]]
-    ? MaybeSlug extends `[${infer Slug}]`
-      ? _GetSlugs<Route, Rest, [...Result, Slug]>
-      : _GetSlugs<Route, Rest, Result>
-    : Result;
-
-/**
- * 개별 슬러그의 타입을 결정합니다.
- *
- * - `...rest` 형태: `string[]` (나머지 파라미터)
- * - 일반 슬러그: `string`
- *
- * @private
- *
- * @example
- * type Normal = IndividualSlugType<"id">;      // string
- * type Rest = IndividualSlugType<"...rest">;   // string[]
- * type Spread = IndividualSlugType<"...args">; // string[]
- */
-type IndividualSlugType<Slug extends string> = Slug extends `...${string}`
-  ? string[]
-  : string;
-
-/**
- * 경로에서 슬러그 이름들을 추출합니다.
- *
- * [변수명] 패턴의 변수명만 추출하여 문자열 배열로 반환합니다.
- *
- * @example
- * // 슬러그가 없는 경우
- * type Slugs0 = GetSlugs<"/about">;
- * // []
- *
- * @example
- * // 슬러그가 1개인 경우
- * type Slugs1 = GetSlugs<"/blog/[id]">;
- * // ["id"]
- *
- * @example
- * // 슬러그가 여러 개인 경우
- * type Slugs2 = GetSlugs<"/blog/[category]/[id]">;
- * // ["category", "id"]
- *
- * @example
- * // 나머지 파라미터 슬러그
- * type Slugs3 = GetSlugs<"/docs/[...rest]">;
- * // ["...rest"]
- */
-export type GetSlugs<Route extends string> = _GetSlugs<Route>;
-
-/**
- * 슬러그 이름들을 Props 타입으로 변환합니다.
- *
- * 각 슬러그 이름을 키로, 해당 슬러그의 타입을 값으로 하는 객체 타입을 생성합니다.
- * - 일반 슬러그: `string`
- * - 나머지 파라미터 (`...rest`): `string[]`
- *
- * @example
- * // 슬러그가 1개인 경우
- * type Props1 = SlugTypes<"/blog/[id]">;
- * // { id: string }
- *
- * @example
- * // 슬러그가 여러 개인 경우
- * type Props2 = SlugTypes<"/blog/[category]/[id]">;
- * // { category: string; id: string }
- *
- * @example
- * // 나머지 파라미터 슬러그
- * type Props3 = SlugTypes<"/docs/[...rest]">;
- * // { rest: string[] }
- *
- * @example
- * // 슬러그가 없는 경우
- * type Props0 = SlugTypes<"/about">;
- * // {} (빈 객체)
- */
-type SlugTypes<Path extends string> =
-  GetSlugs<Path> extends string[]
-    ? {
-        [Slug in GetSlugs<Path>[number] as Slug]: IndividualSlugType<Slug>;
-      }
-    : never;
-
-/**
- * 페이지 컴포넌트가 받을 Props 타입을 생성합니다.
- *
- * RouteProps (path, query)와 SlugTypes (동적 파라미터)를 합쳐서
- * 페이지 컴포넌트의 Props 타입을 만듭니다.
- *
- * @example
- * // 정적 경로 (/about)
- * type AboutProps = PropsForPages<"/about">;
- * // { path: string; query?: string }
- *
- * @example
- * // 동적 경로 (/blog/[id])
- * type BlogProps = PropsForPages<"/blog/[id]">;
- * // { path: string; query?: string; id: string }
- *
- * @example
- * // 다중 슬러그 (/blog/[category]/[id])
- * type PostProps = PropsForPages<"/blog/[category]/[id]">;
- * // { path: string; query?: string; category: string; id: string }
- *
- * @example
- * // 실제 컴포넌트에서 사용
- * function BlogPost({ path, query, id }: PropsForPages<"/blog/[id]">) {
- *   return (
- *     <div>
- *       <h1>Post ID: {id}</h1>
- *       <p>Current path: {path}</p>
- *       {query && <p>Query: {query}</p>}
- *     </div>
- *   );
- * }
- */
-export type PropsForPages<Path extends string> = Prettify<
-  Omit<RouteProps<ReplaceAll<Path, `[${string}]`, string>>, "hash"> &
-    SlugTypes<Path>
->;
 
 /**
  * 페이지를 생성하는 함수 타입
@@ -536,3 +406,399 @@ export type CreateLayout = <Path extends string>(layout: {
   path: Path;
   component: FunctionComponent<{ children: ReactNode }>;
 }) => void;
+
+/**
+ * readonly 문자열 튜플 배열 타입
+ *
+ * staticPaths에 다중 슬러그 값을 전달할 때 사용하는 타입입니다.
+ *
+ * @example
+ * const paths: ReadOnlyStringTupleList = [
+ *   ["tech", "post-1"],
+ *   ["life", "article-1"]
+ * ];
+ */
+type ReadOnlyStringTupleList = readonly (readonly string[])[];
+
+/**
+ * 정적 슬러그 페이지 타입
+ *
+ * staticPaths가 제공된 정적 페이지를 나타냅니다.
+ */
+type StaticSlugPage = {
+  path: string;
+  render: "static";
+  staticPaths: readonly string[] | ReadOnlyStringTupleList;
+};
+
+/**
+ * 동적 페이지 타입
+ *
+ * 런타임에 렌더링되는 동적 페이지를 나타냅니다.
+ */
+type DynamicPage = {
+  path: string;
+  render: "dynamic";
+};
+
+/**
+ * 페이지에 슬러그가 포함되어 있는지 검사하는 타입 헬퍼
+ *
+ * PathWithoutSlug를 사용하여 슬러그 유무를 판단합니다.
+ */
+type IsPageWithSlug<Page extends AnyPage> = Page extends {
+  path: infer P;
+}
+  ? P extends PathWithoutSlug<P>
+    ? false
+    : true
+  : never;
+
+/**
+ * 단일 슬러그를 가능한 값들의 유니온으로 치환합니다.
+ *
+ * staticPaths가 단순 문자열 배열일 때 사용됩니다.
+ *
+ * @example
+ * type Result = ReplaceSlugSet<"/blog/[id]", "post-1" | "post-2">;
+ * // "/blog/post-1" | "/blog/post-2"
+ */
+type ReplaceSlugSet<
+  Path extends string,
+  Slugs extends string,
+> = Slugs extends unknown ? ReplaceAll<Path, `[${string}]`, Slugs> : never;
+
+/**
+ * 경로의 슬러그들을 staticPaths의 튜플 값으로 치환하는 재귀 헬퍼
+ *
+ * 경로를 분할하여 각 슬러그를 해당하는 staticPaths 값으로 치환합니다.
+ * - 일반 슬러그 `[id]`: staticPaths의 해당 인덱스 값으로 치환
+ * - 와일드카드 `[...rest]`: 나머지 모든 값을 펼쳐서 추가 (항상 마지막)
+ * - 리터럴: 그대로 유지
+ *
+ * @example
+ * // "/foo/[...slug]"와 [['a', 'b'], ['c']]인 경우
+ * // 결과: "/foo/a/b" | "/foo/c"
+ *
+ * @example
+ * // "/foo/[slug1]/[slug2]"와 [['a', 'b'], ['c', 'd']]인 경우
+ * // 결과: "/foo/a/b" | "/foo/c/d"
+ */
+type ReplaceHelper<
+  SplitPath extends readonly string[],
+  StaticSlugs extends readonly string[],
+  SlugCountArr extends null[] = [],
+  Result extends string[] = [],
+> = SplitPath extends [
+  infer PathPart extends string,
+  ...infer Rest extends string[],
+]
+  ? PathPart extends `[...${string}]`
+    ? [...Result, ...StaticSlugs]
+    : PathPart extends `[${string}]`
+      ? ReplaceHelper<
+          Rest,
+          StaticSlugs,
+          [...SlugCountArr, null],
+          [...Result, StaticSlugs[SlugCountArr["length"]]]
+        >
+      : ReplaceHelper<Rest, StaticSlugs, SlugCountArr, [...Result, PathPart]>
+  : Result;
+
+/**
+ * ReplaceHelper의 진입점
+ *
+ * 경로를 분할하고 치환 후 다시 결합합니다.
+ * staticPaths가 튜플 배열일 때 각 튜플에 대해 반복합니다.
+ */
+type ReplaceTupleStaticPaths<
+  Path extends string,
+  StaticPathSet extends readonly string[],
+> = StaticPathSet extends unknown
+  ? Join<ReplaceHelper<Split<Path, "/">, StaticPathSet>, "/">
+  : never;
+
+/**
+ * 정적 슬러그 페이지의 모든 가능한 경로를 수집합니다.
+ *
+ * staticPaths 타입에 따라 적절한 치환 방식을 선택합니다.
+ * - 단순 문자열 배열: ReplaceSlugSet 사용
+ * - 튜플 배열: ReplaceTupleStaticPaths 사용
+ */
+type CollectPathsForStaticSlugPage<Page extends StaticSlugPage> = Page extends {
+  path: infer Path extends string;
+  render: "static";
+  staticPaths: infer StaticPaths extends
+    | readonly string[]
+    | ReadOnlyStringTupleList;
+}
+  ? StaticPaths extends readonly string[]
+    ? ReplaceSlugSet<Path, StaticPaths[number]>
+    : StaticPaths extends ReadOnlyStringTupleList
+      ? ReplaceTupleStaticPaths<Path, StaticPaths[number]>
+      : never
+  : never;
+
+/**
+ * 동적 페이지의 경로 타입을 생성합니다.
+ *
+ * 모든 슬러그를 `string`으로 치환합니다.
+ *
+ * @example
+ * // "/users/[id]" => "/users/${string}"
+ */
+type CollectPathsForDynamicSlugPage<Page extends DynamicPage> = Page extends {
+  path: infer Path extends string;
+}
+  ? ReplaceAll<Path, `[${string}]`, string>
+  : never;
+
+/**
+ * 페이지별 모든 가능한 경로를 수집합니다.
+ *
+ * 페이지 타입에 따라 적절한 경로 생성 방식을 선택합니다:
+ * - 슬러그 없음: 경로를 그대로 반환
+ * - 정적 슬러그: staticPaths 값으로 치환된 경로들을 반환
+ * - 동적 슬러그: `${string}` 타입으로 치환된 경로를 반환
+ *
+ * @example
+ * type Paths1 = CollectPaths<{ path: "/about"; render: "static" }>;
+ * // "/about"
+ *
+ * @example
+ * type Paths2 = CollectPaths<{
+ *   path: "/blog/[id]";
+ *   render: "static";
+ *   staticPaths: ["post-1", "post-2"];
+ * }>;
+ * // "/blog/post-1" | "/blog/post-2"
+ *
+ * @example
+ * type Paths3 = CollectPaths<{ path: "/users/[id]"; render: "dynamic" }>;
+ * // "/users/${string}"
+ */
+export type CollectPaths<EachPage extends AnyPage> = EachPage extends unknown
+  ? IsPageWithSlug<EachPage> extends true
+    ? EachPage extends StaticSlugPage
+      ? CollectPathsForStaticSlugPage<EachPage>
+      : EachPage extends DynamicPage
+        ? CollectPathsForDynamicSlugPage<EachPage>
+        : never
+    : EachPage["path"]
+  : never;
+
+/**
+ * 모든 페이지 타입을 나타내는 제네릭 타입
+ *
+ * createPages의 반환 타입 추론에 사용됩니다.
+ */
+export type AnyPage = {
+  path: string;
+  render: "static" | "dynamic";
+  staticPaths?: readonly string[] | readonly (readonly string[])[];
+};
+
+/**
+ * createPages의 응답에서 모든 페이지의 경로를 추출합니다.
+ *
+ * 사용자가 정의한 모든 페이지의 경로를 유니온 타입으로 반환합니다.
+ * Link 컴포넌트 등에서 타입 안전성을 보장하는 데 사용됩니다.
+ *
+ * @example
+ * const pages = createPages(async ({ createPage }) => {
+ *   createPage({
+ *     render: 'static',
+ *     path: '/foo',
+ *     component: Foo,
+ *   });
+ *   createPage({
+ *     render: 'static',
+ *     path: '/bar',
+ *     component: Bar,
+ *   });
+ * });
+ *
+ * type MyPaths = PathsForPages<typeof pages>;
+ * // "/foo" | "/bar"
+ */
+export type PathsForPages<
+  PagesResult extends { DO_NOT_USE_pages: AnyPage } | AnyPage,
+> = PagesResult extends { DO_NOT_USE_pages: AnyPage }
+  ? CollectPaths<PagesResult["DO_NOT_USE_pages"]> extends never
+    ? string
+    : CollectPaths<PagesResult["DO_NOT_USE_pages"]>
+  : PagesResult extends AnyPage
+    ? CollectPaths<PagesResult> extends never
+      ? string
+      : CollectPaths<PagesResult>
+    : never;
+
+/**
+ * 경로에서 슬러그 이름들을 추출하는 재귀 헬퍼
+ *
+ * 경로를 "/"로 분리하여 각 세그먼트를 검사하고,
+ * [변수명] 패턴에서 변수명만 추출하여 배열로 만듭니다.
+ *
+ * @private
+ */
+type _GetSlugs<
+  Route extends string,
+  SplitRoute extends string[] = Split<Route, "/">,
+  Result extends string[] = [],
+> = SplitRoute extends []
+  ? Result
+  : SplitRoute extends [`${infer MaybeSlug}`, ...infer Rest extends string[]]
+    ? MaybeSlug extends `[${infer Slug}]`
+      ? _GetSlugs<Route, Rest, [...Result, Slug]>
+      : _GetSlugs<Route, Rest, Result>
+    : Result;
+
+/**
+ * 경로에서 슬러그 이름들을 추출합니다.
+ *
+ * [변수명] 패턴의 변수명만 추출하여 문자열 배열로 반환합니다.
+ *
+ * @example
+ * type Slugs0 = GetSlugs<"/about">;
+ * // []
+ *
+ * @example
+ * type Slugs1 = GetSlugs<"/blog/[id]">;
+ * // ["id"]
+ *
+ * @example
+ * type Slugs2 = GetSlugs<"/blog/[category]/[id]">;
+ * // ["category", "id"]
+ *
+ * @example
+ * type Slugs3 = GetSlugs<"/docs/[...rest]">;
+ * // ["...rest"]
+ */
+export type GetSlugs<Route extends string> = _GetSlugs<Route>;
+
+/**
+ * Config에서 페이지 경로를 추출합니다.
+ *
+ * 슬러그가 포함된 경로를 문자열 리터럴로 반환합니다.
+ */
+export type PagePath<Config> = Config extends {
+  pages: { path: infer Path };
+}
+  ? Path
+  : never;
+
+/**
+ * 개별 슬러그의 타입을 결정합니다.
+ *
+ * - `...rest` 형태: `string[]` (나머지 파라미터)
+ * - 일반 슬러그: `string`
+ *
+ * @private
+ *
+ * @example
+ * type Normal = IndividualSlugType<"id">;      // string
+ * type Rest = IndividualSlugType<"...rest">;   // string[]
+ * type Spread = IndividualSlugType<"...args">; // string[]
+ */
+type IndividualSlugType<Slug extends string> = Slug extends `...${string}`
+  ? string[]
+  : string;
+
+/**
+ * 와일드카드 슬러그에서 `...` 접두사를 제거합니다.
+ *
+ * @private
+ *
+ * @example
+ * type Clean1 = CleanWildcard<"...rest">;  // "rest"
+ * type Clean2 = CleanWildcard<"id">;       // "id"
+ */
+type CleanWildcard<Slug extends string> = Slug extends `...${infer Wildcard}`
+  ? Wildcard
+  : Slug;
+
+/**
+ * 슬러그 이름들을 Props 타입으로 변환합니다.
+ *
+ * 각 슬러그 이름을 키로, 해당 슬러그의 타입을 값으로 하는 객체 타입을 생성합니다.
+ * - 일반 슬러그: `string`
+ * - 나머지 파라미터 (`...rest`): `string[]`
+ *
+ * @example
+ * type Props1 = SlugTypes<"/blog/[id]">;
+ * // { id: string }
+ *
+ * @example
+ * type Props2 = SlugTypes<"/blog/[category]/[id]">;
+ * // { category: string; id: string }
+ *
+ * @example
+ * type Props3 = SlugTypes<"/docs/[...rest]">;
+ * // { rest: string[] }
+ *
+ * @example
+ * type Props0 = SlugTypes<"/about">;
+ * // {}
+ */
+type SlugTypes<Path extends string> = GetSlugs<Path> extends string[]
+  ? {
+      [Slug in GetSlugs<Path>[number] as CleanWildcard<Slug>]: IndividualSlugType<Slug>;
+    }
+  : never;
+
+/**
+ * 페이지 컴포넌트가 받을 Props 타입을 생성합니다.
+ *
+ * RouteProps (path, query)와 SlugTypes (동적 파라미터)를 합쳐서
+ * 페이지 컴포넌트의 Props 타입을 만듭니다. hash는 제외됩니다.
+ *
+ * @example
+ * type AboutProps = PropsForPages<"/about">;
+ * // { path: string; query?: string }
+ *
+ * @example
+ * type BlogProps = PropsForPages<"/blog/[id]">;
+ * // { path: string; query?: string; id: string }
+ *
+ * @example
+ * type PostProps = PropsForPages<"/blog/[category]/[id]">;
+ * // { path: string; query?: string; category: string; id: string }
+ *
+ * @example
+ * function BlogPost({ path, query, id }: PropsForPages<"/blog/[id]">) {
+ *   return (
+ *     <div>
+ *       <h1>Post ID: {id}</h1>
+ *       <p>Current path: {path}</p>
+ *       {query && <p>Query: {query}</p>}
+ *     </div>
+ *   );
+ * }
+ */
+export type PropsForPages<Path extends string> = Prettify<
+  Omit<RouteProps<ReplaceAll<Path, `[${string}]`, string>>, "hash"> &
+    SlugTypes<Path>
+>;
+
+/**
+ * 응답의 render 타입을 추출합니다.
+ *
+ * render가 string이면 dynamic으로 간주합니다.
+ *
+ * @private
+ */
+type GetResponseType<Response extends { render: string }> =
+  string extends Response["render"] ? { render: "dynamic" } : Response;
+
+/**
+ * getConfig 함수의 응답 타입을 추출합니다.
+ *
+ * fs-router에서 타입 생성 시 사용되며,
+ * 타입 추론에 실패하면 {render: 'dynamic'}으로 폴백합니다.
+ */
+export type GetConfigResponse<
+  Fn extends () => Promise<{ render: string }> | { render: string },
+> =
+  ReturnType<Fn> extends { render: string }
+    ? GetResponseType<ReturnType<Fn>>
+    : GetResponseType<Awaited<ReturnType<Fn>>>;

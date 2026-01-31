@@ -4,7 +4,7 @@
 type HonoEnhancer = <Hono>(fn: (app: Hono) => Hono) => (app: Hono) => Hono;
 
 declare module "virtual:vite-rsc-teul/server-entry" {
-  const default_: import("./types.ts").ServerEntry["default"];
+  const default_: import("./types.ts").ServerEntry;
   export default default_;
 }
 
@@ -14,4 +14,14 @@ declare module "virtual:vite-rsc-teul/config" {
   export const flags: import("./vite-rsc/plugin.ts").Flags;
   export const config: import("./config/types.ts").ConfigDev;
   export const isBuild: boolean;
+}
+
+declare module "virtual:vite-rsc-teul/not-found" {
+  const default_: string;
+  export default default_;
+}
+
+declare module "virtual:vite-rsc-teul/fallback-html" {
+  const default_: string;
+  export default default_;
 }

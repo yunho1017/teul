@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import type { RouteProps } from "../../../server/router/common.js";
+import type { RouteProps } from "../../../server/router/utils.js";
 
 export function useHashSync(
   initialRoute: RouteProps,

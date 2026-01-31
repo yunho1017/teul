@@ -1,4 +1,5 @@
 import { createPages } from "./create-pages/create-pages.js";
+import { isIgnoredPath } from "./utils.js";
 
 /**
  * 파일 시스템 기반 라우터를 생성합니다.
@@ -22,7 +23,7 @@ import { createPages } from "./create-pages/create-pages.js";
  */
 export function fsRouter(
   pages: { [file: string]: () => Promise<any> },
-  _options: {} = {},
+  options: { ignoredPaths: string[] } = { ignoredPaths: [] },
 ) {
   return createPages(async ({ createPage, createLayout, createRoot }) => {
     for (let file in pages) {
@@ -35,6 +36,10 @@ export function fsRouter(
         .replace(/\.\w+$/, "")
         .split("/")
         .filter(Boolean);
+
+      if (isIgnoredPath(pathItems, options.ignoredPaths)) {
+        continue;
+      }
 
       const path =
         "/" +

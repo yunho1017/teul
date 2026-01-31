@@ -1,13 +1,8 @@
-import { Link } from "teul/client";
+import { Link } from "teul";
 import { Suspense, lazy } from "react";
 import { RSCRandomDemo } from "./_components/rsc-random-demo";
 import { TeulFlowVisualizer } from "./_components/teul-flow-visualizer";
-
-const InteractiveCounter = lazy(() =>
-  import("./_components/interactive-counter").then((mod) => ({
-    default: mod.InteractiveCounter,
-  })),
-);
+import { InteractiveCounter } from "./_components/interactive-counter";
 
 export default async function TeulAboutPage() {
   return (
@@ -306,6 +301,6 @@ export async function RSCRandomDemo() {
 
 export const getConfig = async () => {
   return {
-    render: "dynamic",
+    render: "static",
   } as const;
 };

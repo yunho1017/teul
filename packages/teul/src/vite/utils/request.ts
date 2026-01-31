@@ -1,25 +1,25 @@
 import type { TeulConfig } from "../../config.js";
-import type { HandleRequest, HandlerContext } from "../../types.js";
+import type { HandleRequest } from "../../types.js";
 import { decodeRscPath } from "../../utils/path.js";
 
 type HandleRequestInput = Parameters<HandleRequest>[0];
 
 export async function getInput(
-  ctx: HandlerContext,
+  req: Request,
   config: Pick<Required<TeulConfig>, "distDir" | "rscBase" | "rscExtension">,
+  temporaryReferences: unknown,
   decodeReply: (
     body: string | FormData,
     options?: unknown,
   ) => Promise<unknown[]>,
 ) {
   const basePath = "/";
-  const url = new URL(ctx.req.url);
+  const url = new URL(req.url);
   const rscBase = config.rscBase.startsWith("/")
     ? config.rscBase
     : basePath + config.rscBase;
   const rscPathPrefix = rscBase + "/";
   let rscPath: string | undefined;
-  let temporaryReferences: unknown | undefined;
   let input: HandleRequestInput;
 
   if (url.pathname.startsWith(rscPathPrefix)) {
@@ -32,8 +32,8 @@ export async function getInput(
 
     // client RSC request
     let rscParams: unknown = url.searchParams;
-    if (ctx.req.body) {
-      const body = await getActionBody(ctx.req);
+    if (req.body) {
+      const body = await getActionBody(req);
       rscParams = await decodeReply(body, {
         temporaryReferences,
       });
@@ -42,9 +42,9 @@ export async function getInput(
       type: "component",
       rscPath,
       rscParams,
-      req: ctx.req,
+      req: req,
     };
-  } else if (ctx.req.method === "POST") {
+  } else if (req.method === "POST") {
     // TODO server Action 구현
     throw new Error("Post API (서버 액션)은 아직 구현 전 입니다");
   } else {
@@ -52,7 +52,7 @@ export async function getInput(
     input = {
       type: "custom",
       pathname: decodeURI(url.pathname),
-      req: ctx.req,
+      req: req,
     };
   }
   return { input, temporaryReferences };

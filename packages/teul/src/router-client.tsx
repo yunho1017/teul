@@ -25,7 +25,7 @@ export type { LinkProps } from "./client/router/link.js";
 export { useRouter } from "./client/router/hooks/use-router.js";
 
 // Types
-export type { RouteProps } from "./server/router/common.js";
+export type { RouteProps } from "./server/router/utils.js";
 
 // Utils (for server functions)
 export { unstableCallServerRsc } from "./client/rsc/utils/call-server-rsc.js";

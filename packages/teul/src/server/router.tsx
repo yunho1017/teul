@@ -1,6 +1,6 @@
 "use client";
 
-import type { RouteProps } from "./router/common.js";
+import type { RouteProps } from "./router/utils.js";
 import { Slot } from "../client/rsc/slot.js";
 import { RouterContext } from "../client/router/contexts/router-context.js";
 import { getRouteSlotId } from "../client/router/utils/helpers.js";

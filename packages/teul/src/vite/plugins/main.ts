@@ -21,7 +21,7 @@ import {
   type RunnableDevEnvironment,
   type UserConfig,
 } from "vite";
-import type { TeulConfig } from "../../config.js";
+import type { ResolvedTeulConfig } from "../../config.js";
 import {
   DIST_PUBLIC,
   SRC_CLIENT_ENTRY,
@@ -31,9 +31,7 @@ import {
 const PKG_NAME = "teul";
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 
-export function mainPlugin(
-  config: Required<Omit<TeulConfig, "vite">> & Pick<TeulConfig, "vite">,
-): Plugin {
+export function mainPlugin(config: ResolvedTeulConfig): Plugin {
   return {
     name: "teul:vite-plugins:main",
     async config(_config) {
@@ -77,6 +75,7 @@ export function mainPlugin(
               rollupOptions: {
                 input: {
                   index: path.join(__dirname, "../entries/entry.server.js"),
+                  build: path.join(__dirname, "../entries/entry.build.js"),
                 },
               },
             },
@@ -125,12 +124,7 @@ export function mainPlugin(
           noExternal: env.command === "build" ? true : [PKG_NAME],
         },
         optimizeDeps: {
-          exclude: [
-            PKG_NAME,
-            "teul/client",
-            "teul/router/client",
-            "teul/minimal/client",
-          ],
+          exclude: [PKG_NAME, "teul/client", "teul/router/client"],
         },
       };
     },
@@ -142,8 +136,13 @@ export function mainPlugin(
       return () => {
         server.middlewares.use(async (req, res, next) => {
           try {
-            const mod = await environment.runner.import(entryId);
-            await getRequestListener(mod.default)(req, res);
+            // Restore Vite's automatically stripped base
+            req.url = req.originalUrl;
+            const mod: typeof import("../entries/entry.server.js") =
+              await environment.runner.import(entryId);
+            await getRequestListener((req, ...args) =>
+              mod.runFetch(req, ...args),
+            )(req, res);
           } catch (e) {
             next(e);
           }

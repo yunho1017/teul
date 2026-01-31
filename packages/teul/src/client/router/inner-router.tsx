@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import type { RouteProps } from "../../server/router/common.js";
-import { encodeRoutePath } from "../../server/router/common.js";
+import type { RouteProps } from "../../server/router/utils.js";
+import { encodeRoutePath } from "../../server/router/utils.js";
 import { RouterContext } from "./contexts/router-context.js";
 import type { ChangeRoute } from "./contexts/router-context.js";
 import { Slot } from "../rsc/slot.js";

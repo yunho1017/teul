@@ -1,6 +1,6 @@
 import { useRef, useEffect } from "react";
 import { useElementsPromise } from "../../rsc/hooks/use-elements-promise.js";
-import { ROUTE_ID, IS_STATIC_ID } from "../../../server/router/common.js";
+import { ROUTE_ID, IS_STATIC_ID } from "../../../server/router/utils.js";
 
 export function useRouteCache() {
   const staticPathsRef = useRef(new Set<string>());

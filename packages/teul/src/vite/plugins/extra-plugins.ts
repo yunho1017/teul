@@ -21,11 +21,9 @@
 
 import react from "@vitejs/plugin-react";
 import type { PluginOption } from "vite";
-import type { TeulConfig } from "../../config.js";
+import type { ResolvedTeulConfig } from "../../config.js";
 
-export function extraPlugins(
-  config: Required<Omit<TeulConfig, "vite">> & Pick<TeulConfig, "vite">,
-): PluginOption {
+export function extraPlugins(config: ResolvedTeulConfig): PluginOption {
   const plugins = [...(config.vite?.plugins ?? [])];
 
   // 사용자가 React 플러그인을 명시하지 않았다면 자동으로 추가
