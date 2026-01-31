@@ -13,7 +13,7 @@
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "react-server-dom-webpack": "19.2.3",
-    "teul": "0.0.1-alpha.5",
+    "teul": "workspace:*",
     "gray-matter": "^4.0.3",
     "marked": "^12.0.0",
     "react-type-animation": "^3.2.0"
