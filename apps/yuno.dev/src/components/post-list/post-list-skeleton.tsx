@@ -1,4 +1,4 @@
-import { PostCardSkeleton } from "./post-card-skeleton";
+import { PostCardSkeleton } from "../post-card/post-card-skeleton";
 
 interface PostListSkeletonProps {
   title?: string;

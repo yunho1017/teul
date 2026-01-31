@@ -73,7 +73,7 @@ export default function PostDetail({ postPromise }: PostDetailProps) {
         style={{ animationDelay: "0.3s" }}
       >
         <Link
-          to="/post/list"
+          to="/posts/list"
           className="inline-flex items-center justify-center sm:justify-start gap-2 text-blue-600 hover:text-blue-700 font-semibold transition-colors group py-2 px-4 sm:p-0 border sm:border-0 border-blue-200 rounded-lg sm:rounded-none"
         >
           <span className="group-hover:-translate-x-1 transition-transform">

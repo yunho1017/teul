@@ -8,7 +8,7 @@ type PostCardProps = {
 
 export const PostCard = ({ post, index = 0 }: PostCardProps) => {
   return (
-    <Link to={`/post/${post.slug}`}>
+    <Link to={`/posts/${post.slug}`}>
       <article
         className="group p-4 md:p-5 lg:p-6 bg-white border border-gray-200 rounded-lg md:rounded-xl lg:rounded-2xl hover:shadow-lg hover:border-blue-300 transition-all duration-300 animate-slide-up"
         style={{ animationDelay: `${0.1 * (index + 1)}s` }}

@@ -1,7 +1,7 @@
 import { Suspense } from "react";
-import { getPostBySlug } from "../../lib/posts";
-import PostDetail from "../../components/post-detail";
-import { PostErrorBoundary } from "../../components/post-error-boundary";
+import { getPostBySlug } from "../../../lib/posts";
+import PostDetail from "./_components/post-detail";
+import { PostErrorBoundary } from "./_components/post-error-boundary";
 
 type PostPageProps = {
   id: string;
