@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext } from "react";
-import type { RouteProps } from "../../../server/router/common.js";
+import type { RouteProps } from "../../../server/router/utils.js";
 
 export type ChangeRoute = (
   route: RouteProps,

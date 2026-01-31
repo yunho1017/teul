@@ -1,4 +1,5 @@
 import { createPages } from "./create-pages/create-pages.js";
+import { isIgnoredPath } from "./utils.js";
 
 /**
  * 파일 시스템 기반 라우터를 생성합니다.
@@ -36,7 +37,7 @@ export function fsRouter(
         .split("/")
         .filter(Boolean);
 
-      if (pathItems.some((p) => new Set(options.ignoredPaths).has(p))) {
+      if (isIgnoredPath(pathItems, options.ignoredPaths)) {
         continue;
       }
 

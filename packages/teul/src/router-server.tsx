@@ -13,4 +13,4 @@ export { Slot } from "./client/rsc/slot.js";
 export type { SlotProps } from "./client/rsc/slot.js";
 
 // Types
-export type { RouteProps } from "./server/router/common.js";
+export type { RouteProps } from "./server/router/utils.js";

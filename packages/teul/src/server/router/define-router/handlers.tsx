@@ -1,5 +1,5 @@
 import { Router } from "../../router.js";
-import { defineHandlers, encodeRoutePath } from "../common.js";
+import { defineHandlers, encodeRoutePath } from "../utils.js";
 import type { RouteConfigManager } from "./config.js";
 import type { EntriesManager } from "./entries.js";
 import { htmlPath2pathname, is404, pathSpec2pathname } from "./utils.js";

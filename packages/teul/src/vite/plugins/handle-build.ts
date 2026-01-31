@@ -18,19 +18,17 @@
 import path from "node:path";
 import { pathToFileURL } from "node:url";
 import type { Plugin } from "vite";
-import type { TeulConfig } from "../../config.js";
+import type { ResolvedTeulConfig } from "../../config.js";
 
-import { Readable } from "node:stream";
-import { pipeline } from "node:stream/promises";
-import { joinPath } from "../../utils/path.js";
 import fs from "node:fs";
 import { mkdir, writeFile } from "node:fs/promises";
-import { createProgressLogger, logger } from "../../utils/logger.js";
+import { Readable } from "node:stream";
+import { pipeline } from "node:stream/promises";
 import pc from "picocolors";
+import { createProgressLogger, logger } from "../../utils/logger.js";
+import { joinPath } from "../../utils/path.js";
 
-export function handleBuildPlugin({
-  distDir,
-}: Required<Omit<TeulConfig, "vite">> & Pick<TeulConfig, "vite">): Plugin {
+export function handleBuildPlugin({ distDir }: ResolvedTeulConfig): Plugin {
   return {
     name: "rsc:teul:handle-build",
     buildApp: {

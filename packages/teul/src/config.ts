@@ -56,6 +56,9 @@ export type TeulConfig = {
   vite?: ViteConfig | undefined;
 };
 
+export type ResolvedTeulConfig = Required<Omit<TeulConfig, "vite">> &
+  Pick<TeulConfig, "vite">;
+
 // 설정 병합 헬퍼
 export function mergeConfig(
   userConfig: TeulConfig = {},
@@ -90,7 +93,7 @@ const defaultConfig: Required<Omit<TeulConfig, "vite">> = {
 
 export function resolveConfig(
   config: TeulConfig | undefined,
-): Required<TeulConfig> {
+): ResolvedTeulConfig {
   const resolvedConfig: Required<TeulConfig> = {
     ...defaultConfig,
     adapter: getDefaultAdapter(),

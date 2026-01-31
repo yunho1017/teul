@@ -21,7 +21,7 @@ import {
   type RunnableDevEnvironment,
   type UserConfig,
 } from "vite";
-import type { TeulConfig } from "../../config.js";
+import type { ResolvedTeulConfig } from "../../config.js";
 import {
   DIST_PUBLIC,
   SRC_CLIENT_ENTRY,
@@ -31,9 +31,7 @@ import {
 const PKG_NAME = "teul";
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 
-export function mainPlugin(
-  config: Required<Omit<TeulConfig, "vite">> & Pick<TeulConfig, "vite">,
-): Plugin {
+export function mainPlugin(config: ResolvedTeulConfig): Plugin {
   return {
     name: "teul:vite-plugins:main",
     async config(_config) {

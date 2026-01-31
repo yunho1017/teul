@@ -15,11 +15,9 @@
  */
 
 import type { Plugin } from "vite";
-import type { TeulConfig } from "../../config.js";
+import type { ResolvedTeulConfig } from "../../config.js";
 
-export function virtualConfigPlugin(
-  config: Required<Omit<TeulConfig, "vite">> & Pick<TeulConfig, "vite">,
-): Plugin[] {
+export function virtualConfigPlugin(config: ResolvedTeulConfig): Plugin[] {
   return [
     // Teul 전체 설정을 virtual 모듈로 노출
     createVirtualPlugin("vite-rsc-teul/config", async function () {

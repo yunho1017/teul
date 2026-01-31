@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useEnhanceFetchInternal } from "../../rsc/hooks/use-enhance-fetch-internal.js";
-import { SKIP_HEADER } from "../../../server/router/common.js";
+import { SKIP_HEADER } from "../../../server/router/utils.js";
 
 export function useFetchEnhancer(cachedIds: Set<string>) {
   const enhance = useEnhanceFetchInternal();

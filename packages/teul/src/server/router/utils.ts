@@ -94,3 +94,6 @@ export const SKIP_HEADER = "X-Teul-Skip";
 export function defineHandlers(handlers: Handlers) {
   return handlers;
 }
+
+export const isIgnoredPath = (paths: string[], ignoredPaths: string[]) =>
+  paths.some((p) => new Set(ignoredPaths).has(p));

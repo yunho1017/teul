@@ -1,13 +1,17 @@
 import { existsSync } from "node:fs";
 import path from "node:path";
 import * as vite from "vite";
-import { resolveConfig, type TeulConfig } from "../../../config.js";
+import {
+  resolveConfig,
+  type ResolvedTeulConfig,
+  type TeulConfig,
+} from "../../../config.js";
 import { handleServerRestart } from "./restart.js";
 import loadEnv from "../../../utils/env.js";
 import { combinedPlugins } from "../../plugins/vite-plugins.js";
 import { logger } from "../../../utils/logger.js";
 
-export async function loadConfig(): Promise<Required<TeulConfig>> {
+export async function loadConfig(): Promise<ResolvedTeulConfig> {
   let config: TeulConfig | undefined;
   if (existsSync("teul.config.ts") || existsSync("teul.config.js")) {
     const imported = await vite.runnerImport<{ default: TeulConfig }>(
@@ -21,7 +25,7 @@ export async function loadConfig(): Promise<Required<TeulConfig>> {
 export async function startDevServer(
   host: string | undefined,
   port: number,
-  config: Required<TeulConfig>,
+  config: ResolvedTeulConfig,
   isRestart?: boolean,
 ) {
   if (isRestart) {
@@ -37,7 +41,9 @@ export async function startDevServer(
 
   // Override Vite's restart to intercept automatic restarts (.env, tsconfig, etc.)
   server.restart = async () => {
-    logger.info("Vite 서버 재시작이 감지되었습니다. teul 플러그인을 다시 로드합니다...");
+    logger.info(
+      "Vite 서버 재시작이 감지되었습니다. teul 플러그인을 다시 로드합니다...",
+    );
     await handleServerRestart(host, port, server);
   };
 

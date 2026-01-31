@@ -1,5 +1,5 @@
 import { Link } from "teul";
-import type { Post } from "../lib/posts";
+import { Post } from "../../lib/posts";
 
 type PostCardProps = {
   post: Post;

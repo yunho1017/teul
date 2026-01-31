@@ -6,16 +6,35 @@ import { RouterContext } from "./contexts/router-context.js";
 import { parseRoute } from "./utils/parse-route.js";
 import { isAltClick } from "./utils/helpers.js";
 import type { TransitionFunction } from "react";
+import type { RouteConfig } from "../../router.js";
 
-export interface LinkProps
-  extends Omit<AnchorHTMLAttributes<HTMLAnchorElement>, "href"> {
-  to: string;
+type AllowPathDecorators<Path extends string> = Path extends unknown
+  ? Path | `${Path}?${string}` | `${Path}#${string}`
+  : never;
+
+type InferredPaths = RouteConfig extends {
+  paths: infer UserPaths extends string;
+}
+  ? AllowPathDecorators<UserPaths>
+  : string;
+
+export interface LinkProps extends Omit<
+  AnchorHTMLAttributes<HTMLAnchorElement>,
+  "href"
+> {
+  to: InferredPaths;
   children: ReactNode;
   scroll?: boolean;
   ref?: Ref<HTMLAnchorElement> | undefined;
 }
 
-export function Link({ to, children, scroll, ref: refProp, ...props }: LinkProps) {
+export function Link({
+  to,
+  children,
+  scroll,
+  ref: refProp,
+  ...props
+}: LinkProps) {
   const router = useContext(RouterContext);
   const changeRoute = router
     ? router.changeRoute

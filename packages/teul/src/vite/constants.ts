@@ -5,14 +5,12 @@ export const SRC_CLIENT_ENTRY = "client";
 export const SRC_SERVER_ENTRY = "server";
 export const DEFAULT_PORT = 3000;
 
-import type { TeulConfig } from "../config.js";
+import type { ResolvedTeulConfig } from "../config.js";
 import type { fsRouter } from "../server/router/fs-router.js";
 
-const EXTENSIONS = [".js", ".ts", ".tsx", ".jsx", ".mjs", ".cjs"];
+export const EXTENSIONS = [".js", ".ts", ".tsx", ".jsx", ".mjs", ".cjs"];
 
-export const getManagedServerEntry = (
-  config: Required<Omit<TeulConfig, "vite">> & Pick<TeulConfig, "vite">,
-) => {
+export const getManagedServerEntry = (config: ResolvedTeulConfig) => {
   const globBase = `/${config.srcDir}/${config.pagesDir}/`;
   const globPattern = `${globBase}**/*.{${EXTENSIONS.map((ext) =>
     ext.slice(1),

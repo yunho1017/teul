@@ -26,8 +26,10 @@
 
 import rsc from "@vitejs/plugin-rsc";
 import type { PluginOption } from "vite";
-import { type TeulConfig } from "../../config.js";
+import { type ResolvedTeulConfig, type TeulConfig } from "../../config.js";
 import { allowServerPlugin } from "./allow-server.js";
+import { cloudflarePlugin } from "./cloudflare.js";
+import { defaultAdapterPlugin } from "./default-adapter.js";
 import { extraPlugins } from "./extra-plugins.js";
 import { fallbackHtmlPlugin } from "./fallback-html.js";
 import { handleBuildPlugin } from "./handle-build.js";
@@ -35,8 +37,7 @@ import { mainPlugin } from "./main.js";
 import { patchWebpackPlugin } from "./patch-webpack.js";
 import { userEntriesPlugin } from "./user-entries.js";
 import { virtualConfigPlugin } from "./virtual-config.js";
-import { cloudflarePlugin } from "./cloudflare.js";
-import { defaultAdapterPlugin } from "./default-adapter.js";
+import { fsRouterTypegenPlugin } from "./fs-router-typegen.js";
 
 export type Flags = {};
 
@@ -50,9 +51,7 @@ export type RscPluginOptions = {
  *
  * React Server Components를 Vite에서 사용할 수 있도록 하는 통합 플러그인입니다.
  */
-export function combinedPlugins(
-  config: Required<Omit<TeulConfig, "vite">> & Pick<TeulConfig, "vite">,
-): PluginOption {
+export function combinedPlugins(config: ResolvedTeulConfig): PluginOption {
   return [
     // 사용자 정의 플러그인 및 React 플러그인
     extraPlugins(config),
@@ -79,5 +78,6 @@ export function combinedPlugins(
     handleBuildPlugin(config),
     // HTML 템플릿 처리
     fallbackHtmlPlugin(),
+    fsRouterTypegenPlugin(config),
   ];
 }

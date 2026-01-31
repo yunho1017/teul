@@ -1,4 +1,4 @@
-import { defineHandlers } from "../common.js";
+import { defineHandlers } from "../utils.js";
 import { RouteConfigManager } from "./config.js";
 import { EntriesManager } from "./entries.js";
 import { createHandleBuild, createHandleRequest } from "./handlers.js";
