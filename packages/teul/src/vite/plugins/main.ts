@@ -126,12 +126,7 @@ export function mainPlugin(
           noExternal: env.command === "build" ? true : [PKG_NAME],
         },
         optimizeDeps: {
-          exclude: [
-            PKG_NAME,
-            "teul/client",
-            "teul/router/client",
-            "teul/minimal/client",
-          ],
+          exclude: [PKG_NAME, "teul/client", "teul/router/client"],
         },
       };
     },

@@ -103,3 +103,11 @@ export const isStringArray = (value: unknown): value is string[] => {
     Array.isArray(value) && value.every((item) => typeof item === "string")
   );
 };
+
+export const is404 = (pathSpec: PathSpec) =>
+  pathSpec.length === 1 &&
+  pathSpec[0]!.type === "literal" &&
+  pathSpec[0]!.name === "404";
+
+export const htmlPath2pathname = (htmlPath: string): string =>
+  htmlPath === "/404" ? "404.html" : htmlPath + "/index.html";

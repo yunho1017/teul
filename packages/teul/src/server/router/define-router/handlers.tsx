@@ -2,6 +2,7 @@ import { Router } from "../../router.js";
 import { defineHandlers, encodeRoutePath } from "../common.js";
 import type { RouteConfigManager } from "./config.js";
 import type { EntriesManager } from "./entries.js";
+import { htmlPath2pathname, is404, pathSpec2pathname } from "./utils.js";
 
 type HandleRequest = Parameters<typeof defineHandlers>[0]["handleRequest"];
 type HandleBuild = Parameters<typeof defineHandlers>[0]["handleBuild"];
@@ -90,7 +91,7 @@ export const createHandleRequest = (
           />
         );
 
-        return renderHtml(entries, html, {
+        return renderHtml(await renderRsc(entries), html, {
           rscPath,
           status: httpstatus,
         });
@@ -195,61 +196,36 @@ export const createHandleBuild = (
           /**
            * 정적 라우트에 대한 RSC 파일 생성
            */
-          const body = await renderRsc(entries);
-          await generateFile(rscPath2pathname(rscPath), body);
+          const stream = await renderRsc(entries);
+
+          const [stream1, stream2] = stream.tee();
+          await generateFile(rscPath2pathname(rscPath), stream1);
+
+          const html = (
+            <Router
+              route={{ path: pathname, query: "", hash: "" }}
+              httpstatus={is404(item.pathSpec) ? 404 : 200}
+            />
+          );
+          const res = await renderHtml(stream2, html, {
+            rscPath,
+          });
+          await generateFile(htmlPath2pathname(pathname), res.body || "");
         }
       }),
     );
 
-    /**
-     * 2단계: HTML 파일 생성
-     * 각 정적 라우트에 대해 HTML 파일을 생성합니다.
-     */
+    // default html
     for (const item of myConfig) {
       if (item.type !== "route") {
         continue;
       }
-
-      const { pathname, specs } = item;
-
-      /**
-       * 동적 라우트는 빌드 시 건너뜁니다.
-       */
-      if (!item.specs.isStatic) {
-        continue;
-      }
-
-      if (!pathname) {
-        continue;
-      }
-
-      /**
-       * noSsr 라우트는 기본 HTML만 생성합니다.
-       * 클라이언트 측에서 렌더링됩니다.
-       */
-      if (specs.noSsr) {
-        await generateDefaultHtml(pathname);
-        continue;
-      }
-
-      /**
-       * 정적 라우트는 전체 HTML을 생성합니다.
-       * 1단계에서 캐시한 엔트리를 사용하여 HTML을 렌더링합니다.
-       */
-      const entries = entriesCache.get(pathname);
-      if (entries) {
-        const rscPath = encodeRoutePath(pathname);
-        const html = (
-          <Router
-            route={{ path: pathname, query: "", hash: "" }}
-            httpstatus={specs.is404 ? 404 : 200}
-          />
-        );
-
-        const res = await renderHtml(entries, html, {
-          rscPath,
-        });
-        await generateFile(pathname, res.body ?? "");
+      if (item.specs.noSsr) {
+        const pathname = pathSpec2pathname(item.pathSpec);
+        if (!pathname) {
+          throw new Error("빌드 시 noSsr 라우트에는 pathname이 필수입니다");
+        }
+        await generateDefaultHtml(htmlPath2pathname(pathname));
       }
     }
   };

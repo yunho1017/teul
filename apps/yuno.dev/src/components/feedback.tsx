@@ -1,4 +1,4 @@
-import { Link } from "teul/client";
+import { Link } from "teul";
 
 type FeedbackButton = {
   label: string;

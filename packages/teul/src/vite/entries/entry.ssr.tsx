@@ -32,16 +32,23 @@ Promise.resolve(new Response(new ReadableStream({
   .map((line) => line.trim())
   .join("");
 
-// SSR 전용
-export async function renderHTML(
+type RenderHtmlStream = (
   rscStream: ReadableStream<Uint8Array>,
   rscHtmlStream: ReadableStream<Uint8Array>,
-  options?: {
-    rscPath?: string | undefined;
-    formState?: ReactFormState | undefined;
-    nonce?: string | undefined;
+  options: {
+    rscPath: string | undefined;
+    formState: ReactFormState | undefined;
+    nonce: string | undefined;
+    extraScriptContent: string | undefined;
   },
-) {
+) => Promise<{ stream: ReadableStream; status: number | undefined }>;
+
+// SSR 전용
+export const renderHtmlStream: RenderHtmlStream = async (
+  rscStream,
+  rscHtmlStream,
+  options,
+) => {
   const [stream1, stream2] = rscStream.tee();
 
   let elementsPromise: Promise<RscElementsPayload>;
@@ -94,8 +101,8 @@ export async function renderHTML(
     injectRSCPayload(stream2, options?.nonce ? { nonce: options?.nonce } : {}),
   );
 
-  return responseStream;
-}
+  return { stream: responseStream, status: undefined };
+};
 
 // SSR 사용안함
 export async function renderHtmlFallback() {

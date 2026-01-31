@@ -1,7 +1,7 @@
 "use client";
 
 import { use } from "react";
-import { Link } from "teul/client";
+import { Link } from "teul";
 import type { Post } from "../lib/posts";
 
 type PostDetailProps = {

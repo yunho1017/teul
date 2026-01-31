@@ -1,21 +1,11 @@
-import type { ReactFormState } from "react-dom/client";
 import type { HandleRequest } from "../../types.js";
 
 type RenderUtils = Parameters<HandleRequest>[1];
-type RenderHTML = (
-  rscStream: ReadableStream<Uint8Array>,
-  rscHtmlStream: ReadableStream<Uint8Array>,
-  options?: {
-    rscPath?: string | undefined;
-    formState?: ReactFormState | undefined;
-    nonce?: string | undefined;
-  },
-) => Promise<ReadableStream>;
 
 export function createRenderUtils(
   temporaryReferences: unknown,
   renderToReadableStream: (data: unknown, options?: object) => ReadableStream,
-  loadSsrEntryModule: () => Promise<{ renderHTML: RenderHTML }>,
+  loadSsrEntryModule: () => Promise<typeof import("../entries/entry.ssr.js")>,
 ): RenderUtils {
   const onError = (e: unknown) => {
     if (
@@ -35,31 +25,20 @@ export function createRenderUtils(
         onError,
       });
     },
-    async renderHtml(
-      elements,
-      html,
-      options?: { rscPath?: string; actionResult?: any; status?: number },
-    ) {
-      const ssrEntryModule = await loadSsrEntryModule();
-
-      const rscElementsStream = renderToReadableStream(elements, {
-        onError,
-      });
+    async renderHtml(elementsStream, html, options) {
+      const { renderHtmlStream } = await loadSsrEntryModule();
 
       const rscHtmlStream = renderToReadableStream(html, {
         onError,
       });
-
-      const htmlStream = await ssrEntryModule.renderHTML(
-        rscElementsStream,
-        rscHtmlStream,
-        {
-          formState: options?.actionResult,
-          rscPath: options?.rscPath,
-        },
-      );
-      return new Response(htmlStream, {
-        status: options?.status || 200,
+      const htmlResult = await renderHtmlStream(elementsStream, rscHtmlStream, {
+        rscPath: options?.rscPath,
+        formState: undefined,
+        extraScriptContent: undefined,
+        nonce: undefined,
+      });
+      return new Response(htmlResult.stream, {
+        status: htmlResult.status || options.status || 200,
         headers: { "content-type": "text/html" },
       });
     },
