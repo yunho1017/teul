@@ -15,7 +15,7 @@
  */
 
 import type { Plugin } from "vite";
-import type { TeulConfig } from "../../config.js";
+import type { ResolvedTeulConfig } from "../../config.js";
 import {
   getManagedClientEntry,
   getManagedServerEntry,
@@ -23,9 +23,7 @@ import {
   SRC_SERVER_ENTRY,
 } from "../constants.js";
 
-export function userEntriesPlugin(
-  config: Required<Omit<TeulConfig, "vite">> & Pick<TeulConfig, "vite">,
-): Plugin {
+export function userEntriesPlugin(config: ResolvedTeulConfig): Plugin {
   return {
     name: "rsc:teul:user-entries",
     // 사용자 entry 파일 해석 및 없을 경우 "managed mode" fallback 제공

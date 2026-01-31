@@ -1,8 +1,9 @@
-import { Link } from "teul/client";
+import { Link } from "teul";
+import { LinkProps } from "teul/router/client";
 
 type FeedbackButton = {
   label: string;
-  href: string;
+  href: LinkProps["to"];
   variant?: "primary" | "secondary";
 };
 

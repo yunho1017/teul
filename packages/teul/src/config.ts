@@ -38,21 +38,26 @@ export type TeulConfig = {
    * @default ".rsc"
    */
   rscExtension?: string;
+
+  /**
+   * fs-router에서 무시할 파일 확장자
+   * @default "['_components', '_hooks']"
+   */
+  ignoredFilePath?: string[];
+
+  /**
+   * 어댑터 설정
+   * @default teul/adapters/node
+   */
+  adapter?: string;
   /**
    * Vite 설정 (고급)
    */
   vite?: ViteConfig | undefined;
 };
 
-// 기본 설정
-export const defaultConfig: Required<Omit<TeulConfig, "vite">> = {
-  srcDir: "src",
-  pagesDir: "pages",
-  distDir: "dist",
-  port: 3000,
-  rscBase: "/RSC",
-  rscExtension: ".rsc",
-};
+export type ResolvedTeulConfig = Required<Omit<TeulConfig, "vite">> &
+  Pick<TeulConfig, "vite">;
 
 // 설정 병합 헬퍼
 export function mergeConfig(
@@ -67,4 +72,34 @@ export function mergeConfig(
 // 타입 안전한 설정 정의 헬퍼
 export function defineConfig(config: TeulConfig): TeulConfig {
   return config;
+}
+
+const getDefaultAdapter = () =>
+  process.env.CLOUDFLARE || process.env.WORKERS_CI
+    ? "teul/adapters/cloudflare"
+    : "teul/adapters/node";
+
+// 기본 설정
+const defaultConfig: Required<Omit<TeulConfig, "vite">> = {
+  srcDir: "src",
+  pagesDir: "pages",
+  distDir: "dist",
+  port: 3000,
+  rscBase: "/RSC",
+  rscExtension: ".rsc",
+  ignoredFilePath: ["_components", "_hooks"],
+  adapter: "teul/adapters/node",
+};
+
+export function resolveConfig(
+  config: TeulConfig | undefined,
+): ResolvedTeulConfig {
+  const resolvedConfig: Required<TeulConfig> = {
+    ...defaultConfig,
+    adapter: getDefaultAdapter(),
+    vite: undefined,
+    ...config,
+  };
+
+  return resolvedConfig;
 }

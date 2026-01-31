@@ -1,11 +1,10 @@
 import type { ReactNode } from "react";
-
-type Elements = Record<string, unknown>;
+import type { TeulConfig } from "./config.js";
 
 type RenderRsc = (elements: Record<string, unknown>) => Promise<ReadableStream>;
 
 type RenderHtml = (
-  elements: Elements,
+  elementsStream: ReadableStream,
   html: ReactNode,
   options: { rscPath: string; actionResult?: unknown; status?: number },
 ) => Promise<Response>;
@@ -29,20 +28,49 @@ export type HandleBuild = (utils: {
   rscPath2pathname: (rscPath: string) => string;
   generateFile: (
     pathname: string,
-    body: Promise<ReadableStream | string>,
+    body: ReadableStream | string,
   ) => Promise<void>;
   generateDefaultHtml: (pathname: string) => Promise<void>;
 }) => Promise<void>;
 
 export type ServerEntry = {
-  default: {
-    handleRequest: HandleRequest;
-    handleBuild: HandleBuild;
-  };
+  fetch: (req: Request, ...args: any[]) => Response | Promise<Response>;
+  build: (
+    utils: {
+      emitFile: EmitFile;
+    },
+    ...args: any[]
+  ) => Promise<void>;
+  buildOptions?: Record<string, unknown>;
+  buildEnhancers?: string[];
+  [someOtherProperty: string]: unknown;
 };
 
-/** @deprecated This will be removed soon. */
-export type HandlerContext = {
-  req: Request;
-  res?: Response;
+export type EmitFile = (
+  filePath: string,
+  body: ReadableStream | string,
+) => Promise<void>;
+
+export type Handlers = {
+  handleRequest: HandleRequest;
+  handleBuild: HandleBuild;
+  [someOtherProperty: string]: unknown;
 };
+
+export type ProcessRequest = (req: Request) => Promise<Response | null>;
+
+export type ProcessBuild = (utils: { emitFile: EmitFile }) => Promise<void>;
+
+export type CreateServerEntryAdapter = <Options>(
+  fn: (
+    args: {
+      handlers: Handlers;
+      processRequest: ProcessRequest;
+      processBuild: ProcessBuild;
+      config: Omit<Required<TeulConfig>, "vite">;
+      isBuild: boolean;
+      notFoundHtml: string;
+    },
+    options?: Options,
+  ) => ServerEntry,
+) => (handlers: Handlers, options?: Options) => ServerEntry;

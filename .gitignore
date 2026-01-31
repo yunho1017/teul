@@ -78,3 +78,5 @@ waku*
 tsconfig.tsbuildinfo
 .claude
 .agents
+
+pages.gen.ts

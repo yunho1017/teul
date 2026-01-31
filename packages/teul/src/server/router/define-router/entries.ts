@@ -5,7 +5,7 @@ import {
   IS_STATIC_ID,
   ROUTE_ID,
   SKIP_HEADER,
-} from "../common.js";
+} from "../utils.js";
 import type { RouteConfigManager } from "./config.js";
 import { ROUTE_SLOT_ID_PREFIX } from "./constants.js";
 import type { DefineRouterFunctions } from "./types.js";

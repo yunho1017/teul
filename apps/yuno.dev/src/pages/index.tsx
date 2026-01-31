@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { Link } from "teul/client";
+import { Link } from "teul";
 import { getRecentPosts } from "../lib/posts";
 import { HeroTitle } from "./_components/hero-title";
 import { PostList } from "../components/post-list/post-list";

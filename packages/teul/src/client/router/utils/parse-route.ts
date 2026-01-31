@@ -1,4 +1,4 @@
-import type { RouteProps } from "../../../server/router/common.js";
+import type { RouteProps } from "../../../server/router/utils.js";
 
 const normalizeRoutePath = (path: string) => {
   for (const suffix of ["/", "/index.html"]) {

@@ -4,8 +4,7 @@
   "type": "module",
   "packageManager": "pnpm@10.12.1",
   "scripts": {
-    "dev": "pnpm --filter 01_template dev",
-    "build": "pnpm --filter teul compile && pnpm --filter 01_template build"
+    "compile": "pnpm --filter teul compile"
   },
   "devDependencies": {
     "@types/node": "^24.3.1",
