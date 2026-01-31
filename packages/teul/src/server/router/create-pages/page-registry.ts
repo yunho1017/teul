@@ -235,10 +235,28 @@ export class PageRegistry {
   /**
    * 동적 페이지 경로 맵을 반환합니다.
    *
+   * 동적 세그먼트([id] 같은 것)가 없는 경로를 먼저, 있는 경로를 뒤로 정렬합니다.
+   *
    * @returns 동적 페이지 경로 맵 (경로 → [PathSpec, Component] 매핑)
    */
   getDynamicPagePathMap() {
-    return this.dynamicPagePathMap;
+    const entries = Array.from(this.dynamicPagePathMap.entries());
+
+    entries.sort((a, b) => {
+      const [, [pathSpecA]] = a;
+      const [, [pathSpecB]] = b;
+
+      const dynamicCountA = pathSpecA.filter(
+        (seg) => seg.type === "group",
+      ).length;
+      const dynamicCountB = pathSpecB.filter(
+        (seg) => seg.type === "group",
+      ).length;
+
+      return dynamicCountA - dynamicCountB;
+    });
+
+    return new Map(entries);
   }
 
   /**
