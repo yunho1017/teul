@@ -39,7 +39,7 @@ export default {
       const packageJsonPath = path.resolve("package.json");
       const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, "utf-8"));
       if (packageJson.name && typeof packageJson.name === "string") {
-        projectName = packageJson.name;
+        projectName = packageJson.name.replace(".", "-");
       }
     } catch {
       // Fall back to default if package.json can't be read or parsed
