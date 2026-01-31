@@ -1,0 +1,23 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "yuno-dev",
+  "main": "./dist/server/serve-cloudflare.js",
+  // nodejs_als is required for teul server-side request context
+  // It can be removed if only building static pages
+  "compatibility_flags": ["nodejs_als", "nodejs_compat"],
+  // https://developers.cloudflare.com/workers/platform/compatibility-dates
+  "compatibility_date": "2025-11-17",
+  "assets": {
+    // https://developers.cloudflare.com/workers/static-assets/binding/
+    "binding": "ASSETS",
+    "directory": "./dist/public",
+    "html_handling": "drop-trailing-slash",
+  },
+  "rules": [
+    {
+      "type": "ESModule",
+      "globs": ["**/*.js", "**/*.mjs"],
+    },
+  ],
+  "no_bundle": true,
+}

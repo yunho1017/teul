@@ -80,4 +80,3 @@ tsconfig.tsbuildinfo
 .agents
 
 pages.gen.ts
-wrangler.jsonc
