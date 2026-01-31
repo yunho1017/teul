@@ -24,7 +24,6 @@ import fs from "node:fs";
 import { mkdir, writeFile } from "node:fs/promises";
 import { Readable } from "node:stream";
 import { pipeline } from "node:stream/promises";
-import pc from "picocolors";
 import { createProgressLogger, logger } from "../../utils/logger.js";
 import { joinPath } from "../../utils/path.js";
 
@@ -53,7 +52,7 @@ export function handleBuildPlugin({ distDir }: ResolvedTeulConfig): Plugin {
           if (fs.existsSync(destFile)) {
             return;
           }
-          progress.update(`파일 생성 중 ${pc.dim(filePath)}`);
+          progress.update(`파일 생성 중 ${filePath}`);
           await mkdir(joinPath(destFile, ".."), { recursive: true });
           if (typeof body === "string") {
             await writeFile(destFile, body);

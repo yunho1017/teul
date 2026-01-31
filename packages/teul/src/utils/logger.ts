@@ -1,21 +1,20 @@
-import pc from "picocolors";
 // 간단한 로거
 
 export const logger = {
   info: (message: string) => {
-    console.log(pc.blue(`[teul] ${message}`));
+    console.log(`[teul] ${message}`);
   },
 
   error: (message: string, error?: any) => {
-    console.log(pc.red(`[teul] 에러: ${message}`));
+    console.log(`[teul] 에러: ${message}`);
     if (error) console.error(error);
   },
 
   success: (message: string) => {
-    console.log(pc.green(`[teul] ✓ ${message}`));
+    console.log(`[teul] ✓ ${message}`);
   },
   warn: (message: string) => {
-    console.log(pc.yellow(`[teul] ${message}`));
+    console.log(`[teul] ${message}`);
   },
 };
 
