@@ -18,9 +18,7 @@ export function Feedback({ icon, title, description, buttons }: FeedbackProps) {
   return (
     <div className="max-w-3xl mx-auto px-4 py-16 md:py-24">
       <div className="text-center">
-        <div className="text-6xl md:text-7xl mb-8" animate-bounce>
-          {icon}
-        </div>
+        <div className="text-6xl md:text-7xl mb-8 animate-bounce">{icon}</div>
         <h1 className="text-2xl md:text-3xl font-bold mb-3 text-gray-900">
           {title}
         </h1>
