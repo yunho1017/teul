@@ -77,6 +77,7 @@ export function mainPlugin(
               rollupOptions: {
                 input: {
                   index: path.join(__dirname, "../entries/entry.server.js"),
+                  build: path.join(__dirname, "../entries/entry.build.js"),
                 },
               },
             },
@@ -142,8 +143,13 @@ export function mainPlugin(
       return () => {
         server.middlewares.use(async (req, res, next) => {
           try {
-            const mod = await environment.runner.import(entryId);
-            await getRequestListener(mod.default)(req, res);
+            // Restore Vite's automatically stripped base
+            req.url = req.originalUrl;
+            const mod: typeof import("../entries/entry.server.js") =
+              await environment.runner.import(entryId);
+            await getRequestListener((req, ...args) =>
+              mod.runFetch(req, ...args),
+            )(req, res);
           } catch (e) {
             next(e);
           }

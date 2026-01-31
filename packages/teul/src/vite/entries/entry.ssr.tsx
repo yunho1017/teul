@@ -6,7 +6,8 @@ import type { ReactFormState } from "react-dom/client";
 import { injectRSCPayload } from "rsc-html-stream/server";
 import { loadBootstrapScriptContent } from "../utils/vite.js";
 import { Root } from "../../router-server.js";
-
+import fallbackHtml from "virtual:vite-rsc-teul/fallback-html";
+import { logger } from "../../utils/logger.js";
 type RscElementsPayload = Record<string, unknown>;
 type RscHtmlPayload = ReactNode;
 
@@ -65,12 +66,12 @@ export async function renderHTML(
       getBootstrapPreamble({ rscPath: options?.rscPath || "" }) +
       bootstrapScriptContent,
     onError: (e: unknown) => {
-      console.error("[SSR Error] Full error:", e);
-      console.error(
+      logger.error("[SSR Error] Full error:", e);
+      logger.error(
         "[SSR Error] Stack:",
         e instanceof Error ? e.stack : "No stack",
       );
-      console.error(
+      logger.error(
         "[SSR Error] Owner stack:",
         captureOwnerStack?.() || "No owner stack",
       );
@@ -82,7 +83,7 @@ export async function renderHTML(
       ) {
         return e.digest;
       }
-      console.error("[SSR Error]", captureOwnerStack?.() || "", "\n", e);
+      logger.error("[SSR Error]", captureOwnerStack?.() || "");
     },
     ...(options?.nonce ? { nonce: options.nonce } : {}),
     ...(options?.formState ? { formState: options.formState } : {}),
@@ -98,20 +99,12 @@ export async function renderHTML(
 
 // SSR 사용안함
 export async function renderHtmlFallback() {
-  const bootstrapScriptContent =
-    await import.meta.viteRsc.loadBootstrapScriptContent("index");
-
-  return `<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8" />
-    <title>Teul App</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script>${bootstrapScriptContent}</script>
-  </body>
-</html>`;
+  const bootstrapScriptContent = await loadBootstrapScriptContent();
+  const html = fallbackHtml.replace(
+    "</body>",
+    () => `<script>${bootstrapScriptContent}</script></body>`,
+  );
+  return html;
 }
 
 function HtmlNodeWrapper(props: { children: ReactNode }) {

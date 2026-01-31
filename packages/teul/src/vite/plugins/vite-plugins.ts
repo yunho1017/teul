@@ -26,7 +26,7 @@
 
 import rsc from "@vitejs/plugin-rsc";
 import type { PluginOption } from "vite";
-import type { TeulConfig } from "../../config.js";
+import { type TeulConfig } from "../../config.js";
 import { allowServerPlugin } from "./allow-server.js";
 import { extraPlugins } from "./extra-plugins.js";
 import { fallbackHtmlPlugin } from "./fallback-html.js";
@@ -35,12 +35,14 @@ import { mainPlugin } from "./main.js";
 import { patchWebpackPlugin } from "./patch-webpack.js";
 import { userEntriesPlugin } from "./user-entries.js";
 import { virtualConfigPlugin } from "./virtual-config.js";
+import { cloudflarePlugin } from "./cloudflare.js";
+import { defaultAdapterPlugin } from "./default-adapter.js";
 
 export type Flags = {};
 
 export type RscPluginOptions = {
   flags?: Flags;
-  config?: TeulConfig | undefined;
+  config: Required<TeulConfig>;
 };
 
 /**
@@ -49,27 +51,14 @@ export type RscPluginOptions = {
  * React Server Components를 Vite에서 사용할 수 있도록 하는 통합 플러그인입니다.
  */
 export function combinedPlugins(
-  rscPluginOptions?: RscPluginOptions,
+  config: Required<Omit<TeulConfig, "vite">> & Pick<TeulConfig, "vite">,
 ): PluginOption {
-  const config: Required<Omit<TeulConfig, "vite">> & Pick<TeulConfig, "vite"> =
-    {
-      srcDir: "src",
-      distDir: "dist",
-      pagesDir: "pages",
-      port: 3000,
-      rscBase: "/RSC",
-      rscExtension: ".rsc",
-
-      vite: undefined,
-      ...rscPluginOptions?.config,
-    };
-  const flags = rscPluginOptions?.flags ?? {};
-
   return [
     // 사용자 정의 플러그인 및 React 플러그인
     extraPlugins(config),
     // "use client" 처리 (DCE 적용)
     allowServerPlugin(),
+    cloudflarePlugin(),
     // React Server Components 핵심 플러그인
     rsc({
       serverHandler: false,
@@ -83,7 +72,8 @@ export function combinedPlugins(
     // 사용자 entry 파일 매핑
     userEntriesPlugin(config),
     // 설정 값을 virtual 모듈로 노출
-    ...virtualConfigPlugin(config, flags),
+    ...virtualConfigPlugin(config),
+    defaultAdapterPlugin(config),
     // Webpack 호환성 패치
     patchWebpackPlugin(),
     // 빌드 후처리

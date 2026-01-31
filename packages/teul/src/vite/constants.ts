@@ -1,5 +1,6 @@
 // 공통 상수 정의
 export const DIST_PUBLIC = "public";
+export const BASE_PATH = "/";
 export const SRC_CLIENT_ENTRY = "client";
 export const SRC_SERVER_ENTRY = "server";
 export const DEFAULT_PORT = 3000;
@@ -16,13 +17,16 @@ export const getManagedServerEntry = (
   const globPattern = `${globBase}**/*.{${EXTENSIONS.map((ext) =>
     ext.slice(1),
   ).join(",")}}`;
-  const fsRouterOptions: Parameters<typeof fsRouter>[1] = {};
+  const fsRouterOptions: Parameters<typeof fsRouter>[1] = {
+    ignoredPaths: config.ignoredFilePath,
+  };
   return `
 import { fsRouter } from 'teul/router/server';
+import adapter from 'teul/adapters/default';
 const glob = import.meta.glob(${JSON.stringify(
     globPattern,
   )}, { base: ${JSON.stringify(globBase)} });
-export default fsRouter(glob, ${JSON.stringify(fsRouterOptions)});
+export default adapter(fsRouter(glob, ${JSON.stringify(fsRouterOptions)}));
 `;
 };
 

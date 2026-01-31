@@ -22,7 +22,7 @@ import { createPages } from "./create-pages/create-pages.js";
  */
 export function fsRouter(
   pages: { [file: string]: () => Promise<any> },
-  _options: {} = {},
+  options: { ignoredPaths: string[] } = { ignoredPaths: [] },
 ) {
   return createPages(async ({ createPage, createLayout, createRoot }) => {
     for (let file in pages) {
@@ -35,6 +35,10 @@ export function fsRouter(
         .replace(/\.\w+$/, "")
         .split("/")
         .filter(Boolean);
+
+      if (pathItems.some((p) => new Set(options.ignoredPaths).has(p))) {
+        continue;
+      }
 
       const path =
         "/" +

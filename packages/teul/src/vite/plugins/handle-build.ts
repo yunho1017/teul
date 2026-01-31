@@ -19,29 +19,64 @@ import path from "node:path";
 import { pathToFileURL } from "node:url";
 import type { Plugin } from "vite";
 import type { TeulConfig } from "../../config.js";
-import { emitStaticFile, waitForTasks } from "../utils/build.js";
 
-export function handleBuildPlugin(
-  config: Required<Omit<TeulConfig, "vite">> & Pick<TeulConfig, "vite">,
-): Plugin {
+import { Readable } from "node:stream";
+import { pipeline } from "node:stream/promises";
+import { joinPath } from "../../utils/path.js";
+import fs from "node:fs";
+import { mkdir, writeFile } from "node:fs/promises";
+import { createProgressLogger, logger } from "../../utils/logger.js";
+import pc from "picocolors";
+
+export function handleBuildPlugin({
+  distDir,
+}: Required<Omit<TeulConfig, "vite">> & Pick<TeulConfig, "vite">): Plugin {
   return {
     name: "rsc:teul:handle-build",
     buildApp: {
       async handler(builder) {
-        // 서버 엔트리 import
+        const progress = createProgressLogger();
+        const rootDir = process.cwd();
         const viteConfig = builder.config;
         const entryPath = path.join(
           viteConfig.environments.rsc!.build.outDir,
-          "index.js",
+          "build.js",
         );
-        console.log("[teul] Starting processBuild...");
-        const entry: typeof import("../entries/entry.server.js") = await import(
+
+        const emitFile = async (
+          filePath: string,
+          body: ReadableStream | string,
+        ) => {
+          const destFile = joinPath(rootDir, distDir, filePath);
+          if (!destFile.startsWith(rootDir)) {
+            throw new Error("Invalid filePath: " + filePath);
+          }
+          // In partial mode, skip if the file already exists.
+          if (fs.existsSync(destFile)) {
+            return;
+          }
+          progress.update(`파일 생성 중 ${pc.dim(filePath)}`);
+          await mkdir(joinPath(destFile, ".."), { recursive: true });
+          if (typeof body === "string") {
+            await writeFile(destFile, body);
+          } else {
+            await pipeline(
+              Readable.fromWeb(body as never),
+              fs.createWriteStream(destFile),
+            );
+          }
+        };
+        logger.info("[ssg] 정적 파일 생성 중...");
+        const startTime = performance.now();
+        const entry: typeof import("../entries/entry.build.js") = await import(
           pathToFileURL(entryPath).href
         );
-        await entry.processBuild(viteConfig, config, emitStaticFile);
-        await waitForTasks();
-
-        console.log("[teul] Build complete!");
+        await entry.runBuild({ rootDir, emitFile });
+        progress.done();
+        const fileCount = progress.getCount();
+        logger.success(
+          `${fileCount}개의 파일이 ${Math.ceil(performance.now() - startTime)}ms 만에 생성되었습니다`,
+        );
       },
     },
   };

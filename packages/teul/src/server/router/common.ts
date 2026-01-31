@@ -1,4 +1,4 @@
-import type { ServerEntry } from "../../types.js";
+import type { Handlers } from "../../types.js";
 
 export type RouteProps<Path extends string = string> = {
   path: Path;
@@ -91,6 +91,6 @@ export const HAS404_ID = "HAS404";
  */
 export const SKIP_HEADER = "X-Teul-Skip";
 
-export function defineServer(fns: ServerEntry["default"]) {
-  return fns;
+export function defineHandlers(handlers: Handlers) {
+  return handlers;
 }

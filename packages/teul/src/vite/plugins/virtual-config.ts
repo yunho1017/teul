@@ -16,18 +16,15 @@
 
 import type { Plugin } from "vite";
 import type { TeulConfig } from "../../config.js";
-import type { Flags } from "./vite-plugins.js";
 
 export function virtualConfigPlugin(
   config: Required<Omit<TeulConfig, "vite">> & Pick<TeulConfig, "vite">,
-  flags: Flags,
 ): Plugin[] {
   return [
     // Teul 전체 설정을 virtual 모듈로 노출
     createVirtualPlugin("vite-rsc-teul/config", async function () {
       return `
         export const config = ${JSON.stringify({ ...config, vite: undefined })};
-        export const flags = ${JSON.stringify(flags)};
         export const isBuild = ${JSON.stringify(
           this.environment.mode === "build",
         )};

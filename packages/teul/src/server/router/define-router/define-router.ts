@@ -1,4 +1,4 @@
-import { defineServer } from "../common.js";
+import { defineHandlers } from "../common.js";
 import { RouteConfigManager } from "./config.js";
 import { EntriesManager } from "./entries.js";
 import { createHandleBuild, createHandleRequest } from "./handlers.js";
@@ -22,7 +22,7 @@ export function defineRouter(fns: DefineRouterFunctions) {
   const handleRequest = createHandleRequest(entriesManager, configManager);
   const handleBuild = createHandleBuild(entriesManager, configManager);
 
-  return defineServer({ handleBuild, handleRequest });
+  return defineHandlers({ handleBuild, handleRequest });
 }
 
 export type { DefineRouterFunctions, SlotId } from "./types.js";

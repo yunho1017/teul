@@ -1,10 +1,10 @@
 import { Router } from "../../router.js";
-import { defineServer, encodeRoutePath } from "../common.js";
+import { defineHandlers, encodeRoutePath } from "../common.js";
 import type { RouteConfigManager } from "./config.js";
 import type { EntriesManager } from "./entries.js";
 
-type HandleRequest = Parameters<typeof defineServer>[0]["handleRequest"];
-type HandleBuild = Parameters<typeof defineServer>[0]["handleBuild"];
+type HandleRequest = Parameters<typeof defineHandlers>[0]["handleRequest"];
+type HandleBuild = Parameters<typeof defineHandlers>[0]["handleBuild"];
 
 /**
  * 서버 환경에서 요청을 처리하는 핸들러를 생성합니다.
@@ -195,7 +195,8 @@ export const createHandleBuild = (
           /**
            * 정적 라우트에 대한 RSC 파일 생성
            */
-          await generateFile(rscPath2pathname(rscPath), renderRsc(entries));
+          const body = await renderRsc(entries);
+          await generateFile(rscPath2pathname(rscPath), body);
         }
       }),
     );
@@ -245,12 +246,10 @@ export const createHandleBuild = (
           />
         );
 
-        await generateFile(
-          pathname,
-          renderHtml(entries, html, {
-            rscPath,
-          }).then((res) => res.body || ""),
-        );
+        const res = await renderHtml(entries, html, {
+          rscPath,
+        });
+        await generateFile(pathname, res.body ?? "");
       }
     }
   };

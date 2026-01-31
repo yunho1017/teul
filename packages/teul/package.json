@@ -37,6 +37,14 @@
     "./router/client": {
       "types": "./dist/router-client.d.ts",
       "default": "./dist/router-client.js"
+    },
+    "./adapters/*": {
+      "types": "./dist/adapters/*.d.ts",
+      "default": "./dist/adapters/*.js"
+    },
+    "./internals": {
+      "types": "./dist/internals.d.ts",
+      "default": "./dist/internals.js"
     }
   },
   "bin": {
@@ -66,7 +74,8 @@
     "dotenv": "17.2.2",
     "hono": "4.9.6",
     "rsc-html-stream": "0.0.7",
-    "vite": "7.1.5"
+    "vite": "7.1.5",
+    "picocolors": "^1.1.1"
   },
   "devDependencies": {
     "@netlify/functions": "^4.2.5",
