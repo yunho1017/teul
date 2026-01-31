@@ -37,6 +37,7 @@ export function mainPlugin(config: ResolvedTeulConfig): Plugin {
     async config(_config) {
       let viteRscConfig: UserConfig = {
         define: {
+          "process.env.NODE_ENV": JSON.stringify(process.env.NODE_ENV),
           "import.meta.env.TEUL_CONFIG_RSC_BASE": JSON.stringify(
             config.rscBase,
           ),
