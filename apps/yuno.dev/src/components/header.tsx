@@ -57,6 +57,12 @@ export const Header = () => {
                   About
                 </Link>
                 <Link
+                  to="/about/resume"
+                  className="text-sm md:text-base font-medium text-gray-600 hover:text-blue-600 transition-colors"
+                >
+                  Resume
+                </Link>
+                <Link
                   to="/posts/list"
                   className="text-sm md:text-base font-medium text-gray-600 hover:text-blue-600 transition-colors"
                 >
@@ -174,6 +180,13 @@ export const Header = () => {
                   className="block px-4 py-3 text-base font-medium text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
                 >
                   About
+                </Link>
+                <Link
+                  to="/about/resume"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="block px-4 py-3 text-base font-medium text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                >
+                  Resume
                 </Link>
                 <Link
                   to="/posts/list"

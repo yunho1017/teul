@@ -17,7 +17,7 @@ export default function HomePage() {
       </section>
       {/* Teul Framework Highlight */}
       <section
-        className="mt-10 md:mt-14 lg:mt-16 animate-slide-up"
+        className="py-6 md:py-10 lg:py-12 animate-slide-up"
         style={{ animationDelay: "0.4s" }}
       >
         <div className="p-6 md:p-8 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl border border-blue-100 hover:shadow-xl transition-all duration-300">
@@ -108,6 +108,38 @@ export default function HomePage() {
         >
           <PostList postsPromise={recentPostsPromise} />
         </Suspense>
+      </section>
+
+      {/* About Me Section */}
+      <section
+        className="pb-8 md:pb-12 lg:pb-16 animate-slide-up"
+        style={{ animationDelay: "0.6s" }}
+      >
+        <div className="p-6 md:p-8 bg-gradient-to-br from-gray-50 to-slate-100 rounded-2xl border border-gray-200 text-center">
+          <p className="text-lg md:text-xl text-gray-700 mb-4">
+            저에 대해 더 알고 싶으신가요?
+          </p>
+          <div className="flex flex-wrap justify-center gap-3">
+            <Link
+              to="/about"
+              className="inline-flex items-center gap-2 px-5 py-2.5 text-gray-700 hover:text-blue-600 font-medium border border-gray-300 hover:border-blue-400 rounded-lg transition-all group"
+            >
+              About Me
+              <span className="group-hover:translate-x-1 transition-transform">
+                →
+              </span>
+            </Link>
+            <Link
+              to="/about/resume"
+              className="inline-flex items-center gap-2 px-5 py-2.5 bg-gray-900 hover:bg-gray-800 text-white font-medium rounded-lg transition-colors group"
+            >
+              Resume
+              <span className="group-hover:translate-x-1 transition-transform">
+                →
+              </span>
+            </Link>
+          </div>
+        </div>
       </section>
     </div>
   );

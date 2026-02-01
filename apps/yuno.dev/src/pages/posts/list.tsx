@@ -9,7 +9,7 @@ interface BlogListPageProps {
 
 export default function BlogListPage({ query }: BlogListPageProps) {
   const tag = new URLSearchParams(query).get("tag");
-  const postsPromise = getAllPosts(tag || undefined);
+  const postsPromise = getAllPosts({ tag: tag || undefined });
 
   return (
     <div className="max-w-4xl mx-auto ">

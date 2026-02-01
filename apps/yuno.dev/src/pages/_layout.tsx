@@ -9,7 +9,7 @@ type RootLayoutProps = { children: ReactNode };
 
 export default async function RootLayout({ children }: RootLayoutProps) {
   return (
-    <div className="font-['Nunito'] min-h-screen flex flex-col bg-gray-50">
+    <div className="min-h-screen flex flex-col bg-gray-50">
       <meta name="description" content={"Yuno.dev"} />
       <link rel="icon" type="image/x-icon" href={"/images/favicon.ico"} />
       <Header />
