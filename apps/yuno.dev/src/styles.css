@@ -195,6 +195,7 @@ layer(base);
   margin-top: 1.25em;
   margin-bottom: 1.25em;
   padding-left: 1.625em;
+  list-style-type: disc;
 }
 
 .prose li {

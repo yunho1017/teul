@@ -1,0 +1,80 @@
+# 이력서
+
+프론트엔드 개발자 서윤호입니다.
+
+Vingle에서 커리어를 시작해 SaaS 노코드 솔루션을 만들었고, 현재는 캐치테이블에서 B2B 프론트엔드를 개발하고 있습니다.
+
+## Skills
+
+React, Typescript, Next.js, Redux, HTML/CSS, JavaScript, Git
+
+## Work Experience
+
+### [캐치테이블(2025.01 ~ 재직 중)](https://catchtable.co.kr/)
+
+> **예약·웨이팅 서비스를 외식 매장 전용 통합 솔루션**
+
+**Main Role**: 캐치테이블 예약·웨이팅 서비스를 포함한 B2B 프론트엔드 전반의 신규 기능 개발과 개선 작업
+
+- 기존 JSP 기반 매장용 관리자 페이지를 React로 점진적 마이그레이션하고, 백엔드 코드와 분리된 전용 프론트엔드 레포를 구축했습니다.
+  - **CloudFront + Lambda@Edge + S3** 기반의 신규 인프라와 CI/CD 파이프라인을 구축하여 독립적인 배포 환경을 마련했습니다.
+- 관리자 페이지에 react-hook-form과 zod를 도입하여 기존 jotai 기반의 유효성 검사 및 상태 관리를 개선하고, 공통 컴포넌트화를 통해 재사용성과 유지보수성을 높였습니다.
+- 캐치테이블 웨이팅 서비스의 iOS/Android 배포 프로세스를 자동화했습니다.
+  - 기존 수동 빌드·업로드 방식에서 **GitHub Actions** 기반 CI/CD로 전환하고, Firebase App Distribution 업로드 및 앱 심사 요청을 자동화했습니다.
+- 안드로이드 **targetSDK 34 → 35** 업데이트, **Capacitor 6 → 7** 업그레이드 작업을 진행했습니다.
+
+### 캔랩 코리아(2019.09 ~ 2024.12)
+
+> **프로그래밍 지식 없이 자신만의 커뮤니티 커머스를 만들 수 있는 SaaS 기반의 노코드 솔루션**
+
+**Main Role**: 노코드 커뮤니티 커머스 플랫폼 Moim 웹/관리자 서비스 개발, 프론트엔드 아키텍처 설계 및 개발 환경 개선
+
+- 관리자 페이지에서 블록킷 프리뷰가 필요했으나, 블록킷 렌더링 컴포넌트가 클라이언트에만 존재하여 별도 페이지를 열어야 하는 불편함이 있었습니다. 근본적인 해결을 위해 모노레포 도입을 결정하고, 실 서비스 중인 관리자/클라이언트를 **모노레포로 단독 이전**했습니다.
+  - Compound Component 패턴을 적용하여 블록킷 컴포넌트 내부의 서비스 의존적인 코드들을 분리하고, 사용처에서 의존성을 주입할 수 있는 구조로 설계했습니다.
+  - TurboRepo와 Git Action cache를 활용하여 빌드/배포를 최적화하고(관리자 서비스 **23min → 10min**, 웹 서비스 **16min → 8min**), ESM 적용으로 번들 사이즈를 최적화했습니다(**1.3MB → 800KB**).
+  - webpack 4에서 ESM 관련 에러가 지속 발생하여 원인을 추적한 결과, JS 파일을 파싱하는 내부 라이브러리가 ESM 설정을 처리하지 못하는 문제를 발견하고 **webpack 5**로 업그레이드하여 해결했습니다.
+- 신규 고객사 온보딩 기간 단축 TF에서 **프로젝트 리드**를 맡아 문제 정의부터 타팀 인터뷰, 개선 방안 도출, 점진적 배포 전략 수립, 일정/리소스 관리까지 전 과정을 주도했습니다.
+  - 기존 **150개+** 페이지를 Next.js 기반의 신규 관리자 페이지로 마이그레이션하여, 온보딩 기간을 **4주 → 1~2주**로 단축시켰습니다.
+  - ant-design 기반의 공통 컴포넌트를 설계하고 사용/확장 매뉴얼 및 신규 페이지 개발 매뉴얼을 작성해 개발 생산성을 향상시켰습니다.
+- 서버드리븐 UI 시스템인 블럭킷을 이용해 사용자가 직접 페이지를 수정할 수 있는 **노코드 페이지 빌더**의 프론트엔드 아키텍처를 설계하고 개발했습니다.
+  - 기존의 페이지 프리뷰와 구성 편집이 동시에 불가능했던 환경을 개선하기 위해 직접 해결 방안을 제안하여 과제화하고 구현했습니다.
+- 사용자가 UI 구성을 직접 설정할 수 있도록 서버 드리븐 UI 시스템 **블럭킷**을 설계하고 개발했습니다.
+- Moim 웹 서비스의 초기 로딩 속도를 **40% 개선**했습니다(**2~3초** 단축 - worst case).
+  - Performance/React Profiler 툴을 활용한 성능 분석, Intersection Observer API를 사용한 초기 데이터 호출 최적화, Redux Selector 구독 최적화 등을 수행했습니다.
+- Redux Middleware 기반 토큰 리프레쉬 기능에서 단일 API 호출 시 토큰 리프레쉬가 누락되는 문제를 분석하고, Axios interceptor를 활용한 API 요청 전 토큰 리프레쉬를 적용하여 개선했습니다.
+- Material 컬러 시스템 기반의 자체 컬러 시스템을 도입하고 다크모드를 구현했습니다.
+- POEditor와 React-intl을 사용한 다국어 지원 시스템을 구축했습니다.
+- Storybook을 사용한 디자인 시스템을 구축하고, 공통 컴포넌트 아키텍처를 설계 및 개발했습니다.
+- 상품 상세, 장바구니, 주문서, 결제 등 결제 관련 기능들과 맞춤형 피드/게시판, 실시간 채팅, 커뮤니티 포인트, 설문조사 등 커뮤니티 기능을 개발했습니다.
+
+### [Vingle(2019.01 ~ 2019.09)](https://www.vingle.net/)
+
+> **같은 것을 좋아하는 사람들끼리 이야기할 수 있는 관심사 기반의 SNS 서비스** (서비스 중단)
+
+**Main Role**: Vingle 서비스 유지보수 및 신규 기능 개발
+
+- 커뮤니티 별 투표를 통해 프레지던트(대표자)를 뽑아 그들만의 관심사 커뮤니티를 만들 수 있는 Governance 시스템을 개발했습니다.
+- 개개인의 업적이나 경험을 온라인상의 뱃지로 공유할 수 있는 크립토 배지 기능을 개발했습니다.
+
+## Open Source
+
+### Libraries
+
+- [teul](https://github.com/yunho1017/yuno.dev/tree/main/packages/teul): 미니멀 React 프레임워크
+- [react-opener](https://github.com/yunho1017/react-opener): 모달/다이얼로그 선언적 관리 라이브러리 ([Demo](https://react-opener.vercel.app/))
+- [react-zustand-devtools](https://github.com/yunho1017/react-zustand-devtools): Zustand 디버깅 도구 ([Demo](https://react-zustand-devtools.vercel.app/))
+- [minipack](https://github.com/yunho1017/minipack): 간단한 번들러
+
+### Contributions
+
+- [jotaijs/jotai-location](https://github.com/jotaijs/jotai-location): **Maintainer**
+- [wakujs/waku](https://github.com/wakujs/waku): [#1931](https://github.com/wakujs/waku/pull/1931), [#1929](https://github.com/wakujs/waku/pull/1929)
+- [ant-design/pro-components](https://github.com/ant-design/pro-components): [#8482](https://github.com/ant-design/pro-components/pull/8482), [#8462](https://github.com/ant-design/pro-components/pull/8462)
+
+## Education
+
+- 대덕 소프트웨어 마이스터 고등학교 (2016 ~ 2019.03)
+
+## Military
+
+- 산업기능요원 (2019.11 ~ 2022.09)

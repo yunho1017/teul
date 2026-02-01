@@ -38,9 +38,10 @@ export default async function TeulAboutPage() {
             >
               Waku
             </a>
-            를 참고하여 만든 최소한의 React 프레임워크입니다. React Server
-            Components와 Server-Side Rendering을 지원하며, 불필요한 복잡성 없이
-            필요한 기능만 담았습니다.
+            를 참고하여 만든 최소한의 React 프레임워크입니다.
+            <br />
+            React Server Components와 Server-Side Rendering을 지원하며, 불필요한
+            복잡성 없이 필요한 기능만 담았습니다.
           </p>
           <div className="flex flex-wrap gap-2">
             <span className="px-2.5 py-1 md:px-3 md:py-1.5 bg-blue-100 text-blue-700 rounded-full text-xs md:text-sm font-medium">
@@ -288,7 +289,7 @@ export async function RSCRandomDemo() {
             Teul GitHub 보러가기
           </a>
           <Link
-            to="/posts/list"
+            to="/posts/list?tag=teul"
             className="px-8 py-4 bg-emerald-500 text-white rounded-lg font-semibold hover:bg-emerald-600 transition-all duration-300 text-center"
           >
             Teul 관련 글 보러가기
