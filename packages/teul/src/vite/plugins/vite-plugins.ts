@@ -27,7 +27,6 @@
 import rsc from "@vitejs/plugin-rsc";
 import type { PluginOption } from "vite";
 import { type ResolvedTeulConfig, type TeulConfig } from "../../config.js";
-import { allowServerPlugin } from "./allow-server.js";
 import { cloudflarePlugin } from "./cloudflare.js";
 import { defaultAdapterPlugin } from "./default-adapter.js";
 import { extraPlugins } from "./extra-plugins.js";
@@ -55,13 +54,10 @@ export function combinedPlugins(config: ResolvedTeulConfig): PluginOption {
   return [
     // 사용자 정의 플러그인 및 React 플러그인
     extraPlugins(config),
-    // "use client" 처리 (DCE 적용)
-    allowServerPlugin(),
     cloudflarePlugin(),
     // React Server Components 핵심 플러그인
     rsc({
       serverHandler: false,
-      keepUseCientProxy: true,
       useBuildAppHook: true,
       clientChunks: (meta) => meta.serverChunk,
     }),
