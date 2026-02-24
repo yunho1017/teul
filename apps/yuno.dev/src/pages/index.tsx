@@ -16,10 +16,7 @@ export default function HomePage() {
         <HeroTitle />
       </section>
       {/* Teul Framework Highlight */}
-      <section
-        className="py-6 md:py-10 lg:py-12  "
-        style={{ animationDelay: "0.4s" }}
-      >
+      <section className="py-6" style={{ animationDelay: "0.4s" }}>
         <div className="p-6 md:p-8 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl border border-blue-100 hover:shadow-xl transition-all duration-300">
           <div className="flex flex-col sm:flex-row items-start gap-4">
             <div className="text-3xl md:text-4xl">⚡️</div>
