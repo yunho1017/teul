@@ -100,7 +100,7 @@ export default function HomePage() {
           </Link>
         </div>
 
-        {/* Recent Blog Posts */}
+        {/* Recent Posts */}
         <Suspense
           fallback={
             <PostListSkeleton title="최근 글" showViewAll={true} count={5} />

@@ -1,6 +1,6 @@
-import { Link } from 'teul/client';
+import { Link } from "teul/client";
 
-import { InteractiveDemo } from '../components/counter';
+import { InteractiveDemo } from "../components/counter";
 
 export default async function HomePage() {
   const data = await getData();
@@ -14,9 +14,7 @@ export default async function HomePage() {
         <h1 className="text-6xl font-bold tracking-tight mb-4 bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
           {data.headline}
         </h1>
-        <p className="text-xl text-gray-600 leading-relaxed">
-          {data.body}
-        </p>
+        <p className="text-xl text-gray-600 leading-relaxed">{data.body}</p>
       </div>
 
       {/* Features Grid */}
@@ -25,7 +23,8 @@ export default async function HomePage() {
           <div className="text-3xl mb-3">⚡️</div>
           <h3 className="text-lg font-semibold mb-2">Server Components</h3>
           <p className="text-sm text-gray-600">
-            Built-in support for React Server Components with zero configuration.
+            Built-in support for React Server Components with zero
+            configuration.
           </p>
         </div>
 
@@ -61,14 +60,15 @@ export default async function HomePage() {
       <div className="mt-12 p-8 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-lg text-white">
         <h2 className="text-2xl font-bold mb-3">Ready to explore?</h2>
         <p className="mb-6 text-blue-100">
-          Check out our blog posts to learn more about dynamic routing and server components.
+          Check out our blog posts to learn more about dynamic routing and
+          server components.
         </p>
         <div className="flex gap-4">
           <Link
             to="/post/list"
             className="px-6 py-2.5 bg-white text-blue-600 rounded-lg font-medium hover:bg-blue-50 transition-colors"
           >
-            View Blog Posts
+            View Posts
           </Link>
           <Link
             to="/about"
@@ -84,9 +84,9 @@ export default async function HomePage() {
 
 const getData = async () => {
   const data = {
-    title: 'Teul - The Minimal React Framework',
-    headline: 'Welcome to Teul',
-    body: 'A minimal React framework with built-in support for Server Components, file-based routing, and modern development tools.',
+    title: "Teul - The Minimal React Framework",
+    headline: "Welcome to Teul",
+    body: "A minimal React framework with built-in support for Server Components, file-based routing, and modern development tools.",
   };
 
   return data;
@@ -94,6 +94,6 @@ const getData = async () => {
 
 export const getConfig = async () => {
   return {
-    render: 'static',
+    render: "static",
   } as const;
 };

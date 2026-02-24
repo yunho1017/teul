@@ -3,11 +3,11 @@ import { getAllPosts } from "../../lib/posts";
 import { PostList } from "../../components/post-list/post-list";
 import { PostListSkeleton } from "../../components/post-list/post-list-skeleton";
 
-interface BlogListPageProps {
+interface PostsListPageProps {
   query?: string;
 }
 
-export default function BlogListPage({ query }: BlogListPageProps) {
+export default function PostsListPage({ query }: PostsListPageProps) {
   const tag = new URLSearchParams(query).get("tag");
   const postsPromise = getAllPosts({ tag: tag || undefined });
 

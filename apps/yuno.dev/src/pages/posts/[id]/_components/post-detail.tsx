@@ -2,7 +2,7 @@
 
 import { use } from "react";
 import { Link } from "teul";
-import type { Post } from "../lib/posts";
+import { Post } from "../../../../lib/posts";
 
 type PostDetailProps = {
   postPromise: Promise<Post | null>;
@@ -21,7 +21,7 @@ export default function PostDetail({ postPromise }: PostDetailProps) {
 
       {/* Post Header */}
       <header className="mb-4 sm:mb-8 pb-6 sm:pb-8 border-b  ">
-        <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight mb-4 sm:mb-6 bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent leading-tight">
+        <h1 className="text-2xl md:text-4xl font-bold tracking-tight mb-4 sm:mb-6 bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent leading-tight">
           {post.title}
         </h1>
         <div className="flex flex-wrap items-center gap-3 sm:gap-4 text-gray-600">

@@ -1,5 +1,3 @@
-import fs from "node:fs/promises";
-import path from "node:path";
 import matter from "gray-matter";
 import { marked } from "marked";
 
@@ -16,7 +14,33 @@ export interface Post extends PostMetadata {
   html: string;
 }
 
-const postsDirectory = path.join(process.cwd(), "content/posts");
+// 빌드 타임에 모든 마크다운 파일을 번들에 포함
+const postFiles = import.meta.glob("../../content/posts/*.md", {
+  query: "?raw",
+  import: "default",
+  eager: true,
+}) as Record<string, string>;
+
+function getSlugFromPath(filePath: string): string {
+  const fileName = filePath.split("/").pop() || "";
+  return fileName.replace(/\.md$/, "");
+}
+
+async function parsePost(filePath: string, raw: string): Promise<Post> {
+  const slug = getSlugFromPath(filePath);
+  const { data, content } = matter(raw);
+  const html = await marked(content);
+
+  return {
+    slug,
+    title: data.title,
+    date: data.date,
+    excerpt: data.excerpt,
+    tags: data.tags || [],
+    content,
+    html,
+  };
+}
 
 interface GetAllPostsOptions {
   tag?: string | undefined;
@@ -27,28 +51,10 @@ export async function getAllPosts(
   options?: GetAllPostsOptions,
 ): Promise<Post[]> {
   try {
-    const fileNames = await fs.readdir(postsDirectory);
     const allPostsData = await Promise.all(
-      fileNames
-        .filter((fileName) => fileName.endsWith(".md"))
-        .map(async (fileName) => {
-          const slug = fileName.replace(/\.md$/, "");
-          const fullPath = path.join(postsDirectory, fileName);
-          const fileContents = await fs.readFile(fullPath, "utf8");
-
-          const { data, content } = matter(fileContents);
-          const html = await marked(content);
-
-          return {
-            slug,
-            title: data.title,
-            date: data.date,
-            excerpt: data.excerpt,
-            tags: data.tags || [],
-            content,
-            html,
-          };
-        }),
+      Object.entries(postFiles).map(([filePath, raw]) =>
+        parsePost(filePath, raw),
+      ),
     );
 
     // 날짜순으로 정렬 (최신순)
@@ -85,21 +91,13 @@ export async function getRecentPosts(count: number = 5): Promise<Post[]> {
 // 특정 포스트 가져오기
 export async function getPostBySlug(slug: string): Promise<Post | null> {
   try {
-    const fullPath = path.join(postsDirectory, `${slug}.md`);
-    const fileContents = await fs.readFile(fullPath, "utf8");
+    const entry = Object.entries(postFiles).find(
+      ([filePath]) => getSlugFromPath(filePath) === slug,
+    );
 
-    const { data, content } = matter(fileContents);
-    const html = await marked(content);
+    if (!entry) return null;
 
-    return {
-      slug,
-      title: data.title,
-      date: data.date,
-      excerpt: data.excerpt,
-      tags: data.tags || [],
-      content,
-      html,
-    };
+    return parsePost(entry[0], entry[1]);
   } catch (error) {
     console.error(`Error reading post ${slug}:`, error);
     return null;
@@ -108,16 +106,7 @@ export async function getPostBySlug(slug: string): Promise<Post | null> {
 
 // 모든 포스트의 slug 목록 가져오기 (동적 라우팅용)
 export async function getAllPostSlugs(): Promise<string[]> {
-  await new Promise((resolve) => setTimeout(resolve, 3000));
-  try {
-    const fileNames = await fs.readdir(postsDirectory);
-    return fileNames
-      .filter((fileName) => fileName.endsWith(".md"))
-      .map((fileName) => fileName.replace(/\.md$/, ""));
-  } catch (error) {
-    console.error("Error reading post slugs:", error);
-    return [];
-  }
+  return Object.keys(postFiles).map(getSlugFromPath);
 }
 
 // 특정 태그로 포스트 필터링
