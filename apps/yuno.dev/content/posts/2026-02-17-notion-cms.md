@@ -1,6 +1,6 @@
 ---
 title: "Notion API를 활용한 CMS 구축"
-date: "2025-02-17"
+date: "2026-02-17"
 excerpt: "Notion을 콘텐츠 소스로 활용해 자체 렌더링 CMS를 구축한 과정과, 구현 중 마주친 문제들을 정리했다."
 tags: ["Frontend", "Notion", "CMS", "AI"]
 ---
