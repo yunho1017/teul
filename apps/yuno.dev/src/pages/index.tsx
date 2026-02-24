@@ -12,12 +12,12 @@ export default function HomePage() {
     <div className="max-w-5xl mx-auto">
       <title>Yuno.dev</title>
       {/* Hero Section */}
-      <section className="py-8 md:py-12 lg:py-16 animate-fade-in">
+      <section className="py-8 md:py-12 lg:py-16  ">
         <HeroTitle />
       </section>
       {/* Teul Framework Highlight */}
       <section
-        className="py-6 md:py-10 lg:py-12 animate-slide-up"
+        className="py-6 md:py-10 lg:py-12  "
         style={{ animationDelay: "0.4s" }}
       >
         <div className="p-6 md:p-8 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl border border-blue-100 hover:shadow-xl transition-all duration-300">
@@ -82,7 +82,7 @@ export default function HomePage() {
       </section>
 
       <section
-        className="mt-6 md:mt-10 lg:mt-14 pb-8 md:pb-12 lg:pb-16 animate-slide-up"
+        className="mt-6 md:mt-10 lg:mt-14 pb-8 md:pb-12 lg:pb-16  "
         style={{ animationDelay: "0.2s" }}
       >
         <div className="flex items-center justify-between mb-5 md:mb-6 lg:mb-8">
@@ -112,7 +112,7 @@ export default function HomePage() {
 
       {/* About Me Section */}
       <section
-        className="pb-8 md:pb-12 lg:pb-16 animate-slide-up"
+        className="pb-8 md:pb-12 lg:pb-16  "
         style={{ animationDelay: "0.6s" }}
       >
         <div className="p-6 md:p-8 bg-gradient-to-br from-gray-50 to-slate-100 rounded-2xl border border-gray-200 text-center">

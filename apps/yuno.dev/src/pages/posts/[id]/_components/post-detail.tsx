@@ -16,17 +16,16 @@ export default function PostDetail({ postPromise }: PostDetailProps) {
   }
 
   return (
-    <article className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 animate-fade-in">
+    <article className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8  ">
       <title>{post.title} - Yuno.dev</title>
 
       {/* Post Header */}
-      <header className="mb-8 sm:mb-12 pb-6 sm:pb-8 border-b animate-slide-up">
+      <header className="mb-4 sm:mb-8 pb-6 sm:pb-8 border-b  ">
         <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight mb-4 sm:mb-6 bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent leading-tight">
           {post.title}
         </h1>
         <div className="flex flex-wrap items-center gap-3 sm:gap-4 text-gray-600">
           <time className="flex items-center gap-2 text-sm sm:text-base">
-            <span className="text-lg sm:text-xl">📅</span>
             <span>
               {new Date(post.date).toLocaleDateString("ko-KR", {
                 year: "numeric",
@@ -40,15 +39,15 @@ export default function PostDetail({ postPromise }: PostDetailProps) {
 
       {/* Post Content */}
       <div
-        className="prose prose-sm sm:prose-base lg:prose-lg max-w-none mb-8 sm:mb-12 animate-slide-up break-words overflow-hidden"
-        style={{ animationDelay: "0.1s" }}
+        className="prose prose-sm sm:prose-base lg:prose-lg max-w-none mb-8 sm:mb-12   break-words overflow-hidden"
+        style={{ animationDelay: "0.1s", maxWidth: "none" }}
         dangerouslySetInnerHTML={{ __html: post.html }}
       />
 
       {/* Tags */}
       {post.tags && post.tags.length > 0 && (
         <div
-          className="mt-8 sm:mt-12 pt-6 sm:pt-8 border-t animate-slide-up"
+          className="mt-8 sm:mt-12 pt-6 sm:pt-8 border-t  "
           style={{ animationDelay: "0.2s" }}
         >
           <h3 className="text-sm font-semibold text-gray-900 mb-3 sm:mb-4">
@@ -69,7 +68,7 @@ export default function PostDetail({ postPromise }: PostDetailProps) {
 
       {/* Navigation */}
       <div
-        className="mt-8 sm:mt-12 pt-6 sm:pt-8 border-t flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 sm:gap-4 animate-slide-up"
+        className="mt-8 sm:mt-12 pt-6 sm:pt-8 border-t flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 sm:gap-4  "
         style={{ animationDelay: "0.3s" }}
       >
         <Link

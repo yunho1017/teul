@@ -5,7 +5,7 @@ export default function AboutPage() {
     <div className="max-w-3xl mx-auto">
       <title>About | Yuno.dev</title>
 
-      <section className="py-8 md:py-12 lg:py-16 animate-fade-in">
+      <section className="py-8 md:py-12 lg:py-16  ">
         {/* Profile Image */}
         <div className="flex justify-center mb-8 md:mb-10">
           <img
@@ -16,7 +16,7 @@ export default function AboutPage() {
         </div>
 
         {/* Introduction */}
-        <div className="animate-slide-up" style={{ animationDelay: "0.2s" }}>
+        <div className=" " style={{ animationDelay: "0.2s" }}>
           <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-center text-gray-900 mb-8 md:mb-10">
             안녕하세요, 프론트엔드 개발자 서윤호입니다.
           </h1>
@@ -60,7 +60,7 @@ export default function AboutPage() {
 
         {/* Buttons */}
         <div
-          className="flex flex-col sm:flex-row justify-center gap-4 mt-10 md:mt-12 animate-slide-up"
+          className="flex flex-col sm:flex-row justify-center gap-4 mt-10 md:mt-12  "
           style={{ animationDelay: "0.4s" }}
         >
           <Link

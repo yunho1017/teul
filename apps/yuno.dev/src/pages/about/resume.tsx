@@ -21,11 +21,14 @@ export default async function AboutPage() {
   return (
     <>
       <title>About - Yuno.dev</title>
-      <p className="text-xs text-gray-400 text-right mb-4" style={{ maxWidth: "1200px", margin: "0 auto 1rem" }}>
-        Last updated: June 2025
+      <p
+        className="text-xs text-gray-400 text-right mb-4"
+        style={{ maxWidth: "1200px", margin: "0 auto 1rem" }}
+      >
+        Last updated: 2026.01
       </p>
       <article
-        className="prose prose-sm sm:prose-base lg:prose-lg max-w-none mb-8 sm:mb-12 animate-slide-up break-words overflow-hidden"
+        className="prose prose-sm sm:prose-base lg:prose-lg max-w-none mb-8 sm:mb-12   break-words overflow-hidden"
         style={{ animationDelay: "0.1s", maxWidth: "1200px", margin: "0 auto" }}
         dangerouslySetInnerHTML={{ __html: resume.html }}
       />

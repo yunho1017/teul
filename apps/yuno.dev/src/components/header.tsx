@@ -133,7 +133,7 @@ export const Header = () => {
       {isMobileMenuOpen && (
         <>
           <div
-            className="fixed inset-0 bg-black/50 z-50 md:hidden animate-fade-in"
+            className="fixed inset-0 bg-black/50 z-50 md:hidden"
             onClick={() => setIsMobileMenuOpen(false)}
           />
           <div className="fixed top-0 left-0 bottom-0 w-64 bg-white z-50 md:hidden shadow-xl animate-slide-in-left">

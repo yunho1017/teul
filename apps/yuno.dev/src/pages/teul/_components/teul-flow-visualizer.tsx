@@ -410,7 +410,7 @@ export function TeulFlowVisualizer() {
 
       {/* Complete Message */}
       {currentStep === "complete" && (
-        <div className="p-4 bg-emerald-50 border-2 border-emerald-400 rounded-lg text-center animate-fade-in mt-4">
+        <div className="p-4 bg-emerald-50 border-2 border-emerald-400 rounded-lg text-center   mt-4">
           <div className="text-3xl md:text-4xl mb-2">✅</div>
           <div className="text-base md:text-lg font-bold text-emerald-700">
             전체 플로우 완료!
