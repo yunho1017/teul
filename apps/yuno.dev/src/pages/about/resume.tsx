@@ -25,7 +25,7 @@ export default async function AboutPage() {
         className="text-xs text-gray-400 text-right mb-4"
         style={{ maxWidth: "1200px", margin: "0 auto 1rem" }}
       >
-        Last updated: 2026.01
+        Last updated: 2026.02
       </p>
       <article
         className="prose prose-sm sm:prose-base lg:prose-lg max-w-none mb-8 sm:mb-12   break-words overflow-hidden"
