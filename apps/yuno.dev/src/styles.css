@@ -221,3 +221,127 @@ body {
   margin-bottom: 1.6em;
   padding-left: 1em;
 }
+
+.prose h4 {
+  color: #111827;
+  font-weight: 600;
+  font-size: 1em;
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+  line-height: 1.5;
+}
+
+.prose h5,
+.prose h6 {
+  color: #111827;
+  font-weight: 600;
+  font-size: 0.875em;
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+  line-height: 1.5;
+}
+
+.prose ol {
+  margin-top: 0;
+  margin-bottom: 0;
+  padding-left: 1.625em;
+  list-style-type: decimal;
+}
+
+/* Table styles for markdown content */
+.prose table {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  border-collapse: collapse;
+  margin-top: 2em;
+  margin-bottom: 2em;
+  font-size: 0.875em;
+  line-height: 1.7142857;
+}
+
+.prose thead {
+  border-bottom: 1px solid #d1d5db;
+}
+
+.prose th {
+  color: #111827;
+  font-weight: 600;
+  text-align: left;
+  padding: 0.5714286em 0.8em;
+  vertical-align: bottom;
+  white-space: nowrap;
+}
+
+.prose td {
+  padding: 0.5714286em 0.8em;
+  vertical-align: top;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.prose tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+/* Syntax highlighting (highlight.js tokens) tuned for the dark `pre` background */
+.prose .hljs-comment,
+.prose .hljs-quote {
+  color: #8b949e;
+  font-style: italic;
+}
+
+.prose .hljs-keyword,
+.prose .hljs-selector-tag,
+.prose .hljs-literal,
+.prose .hljs-section,
+.prose .hljs-doctag {
+  color: #ff7b72;
+}
+
+.prose .hljs-string,
+.prose .hljs-regexp,
+.prose .hljs-addition,
+.prose .hljs-meta .hljs-string {
+  color: #a5d6ff;
+}
+
+.prose .hljs-number,
+.prose .hljs-variable,
+.prose .hljs-template-variable,
+.prose .hljs-attr,
+.prose .hljs-attribute,
+.prose .hljs-property,
+.prose .hljs-params {
+  color: #79c0ff;
+}
+
+.prose .hljs-title,
+.prose .hljs-title.function_,
+.prose .hljs-built_in {
+  color: #d2a8ff;
+}
+
+.prose .hljs-type,
+.prose .hljs-title.class_,
+.prose .hljs-class .hljs-title,
+.prose .hljs-meta {
+  color: #ffa657;
+}
+
+.prose .hljs-name,
+.prose .hljs-tag {
+  color: #7ee787;
+}
+
+.prose .hljs-deletion {
+  color: #ffa198;
+}
+
+.prose .hljs-emphasis {
+  font-style: italic;
+}
+
+.prose .hljs-strong {
+  font-weight: 600;
+}

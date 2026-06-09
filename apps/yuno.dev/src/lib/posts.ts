@@ -1,5 +1,5 @@
 import matter from "gray-matter";
-import { marked } from "marked";
+import { marked } from "./markdown";
 
 export interface PostMetadata {
   title: string;
