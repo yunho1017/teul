@@ -166,12 +166,14 @@ body {
 }
 
 .prose code {
-  color: #111827;
-  font-weight: 600;
-  font-size: 0.875em;
-  background-color: #f3f4f6;
-  padding: 0.25em 0.4em;
-  border-radius: 0.25rem;
+  color: #1f2937;
+  font-weight: 500;
+  font-size: 0.85em;
+  background-color: #f1f3f5;
+  padding: 0.12em 0.4em;
+  border-radius: 0.3em;
+  border: 1px solid #e5e7eb;
+  word-break: break-word;
 }
 
 .prose pre {
