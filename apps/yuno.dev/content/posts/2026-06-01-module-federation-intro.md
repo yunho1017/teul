@@ -1,7 +1,7 @@
 ---
 title: "Micro-frontend - Module Federation (0)"
 date: "2026-06-01"
-excerpt: ""
+excerpt: "Module Federation의 share scope·bootstrap 같은 내부 동작까지 정리한 도입기."
 tags: ["Frontend", "Micro-frontend", "Module Federation"]
 ---
 
