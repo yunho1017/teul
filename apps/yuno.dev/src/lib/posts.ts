@@ -14,20 +14,24 @@ export interface Post extends PostMetadata {
   html: string;
 }
 
-// 빌드 타임에 모든 마크다운 파일을 번들에 포함
+// 각 마크다운을 per-post 청크로 분리해, 필요한 글만 런타임에 동적 로드한다.
+// (eager: true 이면 모든 md 원문이 이 모듈 번들에 문자열로 인라인된다)
 const postFiles = import.meta.glob("../../content/posts/*.md", {
   query: "?raw",
   import: "default",
-  eager: true,
-}) as Record<string, string>;
+}) as Record<string, () => Promise<string>>;
 
 function getSlugFromPath(filePath: string): string {
   const fileName = filePath.split("/").pop() || "";
   return fileName.replace(/\.md$/, "");
 }
 
-async function parsePost(filePath: string, raw: string): Promise<Post> {
+async function parsePost(
+  filePath: string,
+  load: () => Promise<string>,
+): Promise<Post> {
   const slug = getSlugFromPath(filePath);
+  const raw = await load();
   const { data, content } = matter(raw);
   const html = await marked(content);
 
@@ -52,8 +56,8 @@ export async function getAllPosts(
 ): Promise<Post[]> {
   try {
     const allPostsData = await Promise.all(
-      Object.entries(postFiles).map(([filePath, raw]) =>
-        parsePost(filePath, raw),
+      Object.entries(postFiles).map(([filePath, load]) =>
+        parsePost(filePath, load),
       ),
     );
 
