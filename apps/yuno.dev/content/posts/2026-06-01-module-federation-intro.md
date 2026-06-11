@@ -1,5 +1,5 @@
 ---
-title: "Micro-frontend - Module Federation (0)"
+title: "Module Federation (1) - Micro-frontend와 Module Federation의 기본 개념과 내부 동작"
 date: "2026-06-01"
 excerpt: "Module Federation의 share scope·bootstrap 같은 내부 동작까지 정리한 도입기."
 tags: ["Frontend", "Micro-frontend", "Module Federation"]
@@ -162,7 +162,6 @@ webpack은 이 `import`를 `__webpack_require__(react)`로 컴파일합니다.
 모듈 id를 받아, 캐시에 있으면 그 `exports`를 바로 돌려주고, 없으면 모듈 팩토리(`__webpack_modules__[id]`)를 그 자리에서 실행해 `module.exports`를 반환합니다. ([`JavascriptModulesPlugin.js`](https://github.com/webpack/webpack/blob/main/lib/javascript/JavascriptModulesPlugin.js#L1728-L1864)).
 
 ```js
-// 생성된 webpack 런타임 (요약)
 function __webpack_require__(moduleId) {
   var cached = __webpack_module_cache__[moduleId];
   if (cached !== undefined) return cached.exports;
@@ -196,13 +195,11 @@ webpack Docs에도 [_asynchronous boundary_](https://webpack.js.org/concepts/mod
 
 dynamic import 를 사용해 비동기 경계를 만들어, `bootstrap.js`는 share scope가 준비된 뒤에 실행하도록 하는 것입니다.
 
-```js
-// index.js
+```js title="index.js"
 import("./bootstrap");
 ```
 
-```js
-// bootstrap.js — 실제 앱 코드
+```js title="bootstrap.js"
 import React from "react";
 // ...
 ```
@@ -234,7 +231,6 @@ __webpack_require__.e = (chunkId) =>
 이 핸들러 중 공유 의존성을 맡는 `consumes`를 등록하는 게 Module Federation입니다. MF 2.0(`@module-federation/enhanced`)은 이 핸들러를 직접 구현하지 않고, 실제 로직은 런타임(`@module-federation/webpack-bundler-runtime`)으로 위임하는 형태로 생성합니다([`ConsumeSharedRuntimeModule.ts`](https://github.com/module-federation/core/blob/8a37a93851044bfb2af87d76e7d346c22ae08f51/packages/enhanced/src/lib/sharing/ConsumeSharedRuntimeModule.ts#L131-L183)).
 
 ```js
-// @module-federation/enhanced 가 생성하는 f.consumes (요약)
 __webpack_require__.f.consumes = (chunkId, promises) => {
   __webpack_require__.federation.bundlerRuntime.consumes({
     chunkId,
@@ -266,7 +262,6 @@ ModuleFederationPlugin의 간단한 동작 흐름을 정리해보겠습니다.
 webpack의 `afterPlugins` 훅에서 아래와 같은 코드를 보면 알 수 있습니다. (실제 코드: [`ModuleFederationPlugin.ts`](https://github.com/module-federation/core/blob/main/packages/enhanced/src/lib/container/ModuleFederationPlugin.ts#L225)).
 
 ```js
-// @module-federation/enhanced — ModuleFederationPlugin (요약)
 compiler.hooks.afterPlugins.tap("ModuleFederationPlugin", () => {
   if (exposes)
     new ContainerPlugin({ name, filename, exposes, shareScope }).apply(
@@ -290,8 +285,7 @@ compiler.hooks.afterPlugins.tap("ModuleFederationPlugin", () => {
 `exposes` 경로마다 청크를 만들고, 진입점인 `remoteEntry.js`를 생성합니다.  
 그 안에는 어떤 expose가 어떤 청크를 쓰는지 적은 `moduleMap`과, 모듈을 꺼내는 `get`, share scope를 맞추는 `init`이 들어갑니다.
 
-```js
-// remoteEntry.js (요약)
+```js title="remoteEntry.js"
 const moduleMap = {
   "./Panel": () => __webpack_require__.e(chunkId).then(/* ... */),
 };
@@ -309,7 +303,6 @@ const init = (shareScope) => {
 어느 청크가 어느 remote의 어느 expose인지는 `idToExternalAndNameMapping`에 적어둡니다.
 
 ```js
-// host 산출물 (요약)
 const idToExternalAndNameMapping = { 180: ["default", "./Panel", 681] };
 __webpack_require__.f.remotes = (chunkId, promises) => {
   /* remote 청크 로드 */

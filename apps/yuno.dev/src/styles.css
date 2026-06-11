@@ -117,31 +117,36 @@ body {
   max-width: 65ch;
 }
 
+/* 글 첫 요소는 윗여백 제거 (제목 바로 아래 빈 간격 방지) */
+.prose > :first-child {
+  margin-top: 0;
+}
+
 .prose h1 {
   color: #111827;
   font-weight: 800;
-  font-size: 2.25em;
-  margin-top: 0;
-  margin-bottom: 0.8888889em;
-  line-height: 1.1111111;
+  font-size: 1.75em;
+  margin-top: 2.25em;
+  margin-bottom: 0.8em;
+  line-height: 1.2;
 }
 
 .prose h2 {
   color: #111827;
   font-weight: 700;
-  font-size: 1.5em;
+  font-size: 1.4em;
   margin-top: 2em;
-  margin-bottom: 1em;
-  line-height: 1.3333333;
+  margin-bottom: 0.6em;
+  line-height: 1.3;
 }
 
 .prose h3 {
   color: #111827;
-  font-weight: 600;
-  font-size: 1.25em;
-  margin-top: 1.6em;
-  margin-bottom: 0.6em;
-  line-height: 1.6;
+  font-weight: 700;
+  font-size: 1.2em;
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+  line-height: 1.4;
 }
 
 .prose p {
@@ -251,20 +256,20 @@ body {
 
 .prose h4 {
   color: #111827;
-  font-weight: 600;
-  font-size: 1em;
-  margin-top: 1.5em;
-  margin-bottom: 0.5em;
+  font-weight: 700;
+  font-size: 1.05em;
+  margin-top: 1.2em;
+  margin-bottom: 0.4em;
   line-height: 1.5;
 }
 
 .prose h5,
 .prose h6 {
-  color: #111827;
-  font-weight: 600;
-  font-size: 0.875em;
-  margin-top: 1.5em;
-  margin-bottom: 0.5em;
+  color: #374151;
+  font-weight: 700;
+  font-size: 0.9em;
+  margin-top: 1.1em;
+  margin-bottom: 0.4em;
   line-height: 1.5;
 }
 

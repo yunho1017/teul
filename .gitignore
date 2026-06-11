@@ -82,3 +82,6 @@ tsconfig.tsbuildinfo
 pages.gen.ts
 
 draft-posts
+
+# Module Federation 데모 예제 (블로그용, 추적 안 함)
+apps/mf-example/
